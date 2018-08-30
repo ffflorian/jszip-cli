@@ -25,7 +25,8 @@
     "clean": "rimraf dist",
     "build": "tsc",
     "dist": "yarn clean && yarn build",
-    "prettier": "prettier --write \"src/*.ts\" \"spec/*.js\""
+    "prettier": "prettier --write \"src/*.ts\" \"spec/*.js\"",
+    "test": "yarn dist"
   },
   "version": "1.0.0"
 }
