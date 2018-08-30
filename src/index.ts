@@ -16,46 +16,42 @@ export class JSZipCLI {
     this.jszip = new JSZip();
   }
 
-  private async addFile(jszip: JSZip, filePath: string): Promise<void> {
+  private async addFile(filePath: string): Promise<void> {
     const fileData = await promisify(fs.readFile)(filePath);
-    jszip.file(filePath, fileData);
+    this.jszip.file(filePath, fileData);
   }
 
-  private addFolder(dirPath: string): JSZip {
-    return this.jszip.folder(dirPath);
-  }
-
-  private async checkFile(jszip: JSZip, filePath: string): Promise<void> {
+  private async checkFile(filePath: string): Promise<void> {
     const fileStat = await promisify(fs.lstat)(filePath);
 
     if (fileStat.isSymbolicLink()) {
-      await this.addLink(jszip, filePath);
+      await this.addLink(filePath);
     } else if (fileStat.isDirectory()) {
-      await this.walkDir(jszip, filePath);
+      await this.walkDir(filePath);
     } else if (fileStat.isFile()) {
-      await this.addFile(jszip, filePath);
+      await this.addFile(filePath);
     } else {
-      throw new Error(`Unknown file: ${filePath}`);
+      throw new Error(`Can't read: ${filePath}`);
     }
   }
 
-  private async addLink(jszip: JSZip, filePath: string): Promise<void> {
+  private async addLink(filePath: string): Promise<void> {
     const fileData = await promisify(fs.readlink)(filePath);
-    jszip.file(filePath, fileData);
+    this.jszip.file(filePath, fileData);
   }
 
-  private async walkDir(jszip: JSZip, filePath: string): Promise<void> {
+  private async walkDir(filePath: string): Promise<void> {
     const files = await promisify(fs.readdir)(filePath);
     for (const file of files) {
       const newPath = path.join(filePath, file);
-      await this.checkFile(jszip, newPath);
+      await this.checkFile(newPath);
     }
   }
 
   public async save(): Promise<void> {
     const outputFile = path.join(this.options.outputDir, 'data.zip');
 
-    await Promise.all(this.options.entries.map(file => this.checkFile(this.jszip, file)));
+    await Promise.all(this.options.entries.map(file => this.checkFile(file)));
     const data = await this.jszip.generateAsync({type: 'nodebuffer'});
 
     await promisify(fs.writeFile)(outputFile, data);
