@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 import * as program from 'commander';
-import * as path from 'path';
 
 import {JSZipCLI} from './';
 
@@ -13,7 +12,8 @@ program
   .name(name.replace(/^@[^/]+\//, ''))
   .version(version, '-v, --version')
   .description(description)
-  .option('-o, --output <dir>', 'Specify the output directory', path.resolve('.', 'data.zip'))
+  .option('-o, --output <dir>', 'Specify the output directory (default: stdout)')
+  .option('-l, --level <number>', 'Specify the compression level', 5)
   .option('-i, --ignore <entry>', 'Ignore a file or directory');
 
 program
@@ -22,25 +22,30 @@ program
   .arguments('<entries...>')
   .action((entries, options) => {
     new JSZipCLI({
-      ignoreEntries: options.ignore ? [options.ignore] : undefined,
-      outputFile: options.output,
+      ignoreEntries: options.parent.ignore ? [options.parent.ignore] : undefined,
+      level: options.parent.level,
+      outputDir: options.parent.output,
     })
       .add(entries)
       .save()
-      .then(() => console.log('Done.'))
+      .then(() => {
+        if (options.parent.output) {
+          console.log('Done.');
+        }
+      })
       .catch(console.error);
   });
 
 program
   .command('extract')
   .description('Extract files from a ZIP archive.')
-  .action((entries, options) => {
+  .arguments('<files...>')
+  .action((files, options) => {
     new JSZipCLI({
-      ignoreEntries: options.ignore ? [options.ignore] : undefined,
-      outputFile: options.output,
+      ignoreEntries: options.parent.ignore ? [options.parent.ignore] : undefined,
+      outputDir: options.parent.output,
     })
-      .add(entries)
-      .save()
+      .extract(files)
       .then(() => console.log('Done.'))
       .catch(console.error);
   });
