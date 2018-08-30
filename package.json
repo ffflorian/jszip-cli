@@ -23,8 +23,8 @@
   "name": "@ffflorian/jszip-cli",
   "repository": "https://github.com/ffflorian/jszip-cli.git",
   "scripts": {
-    "clean": "rimraf dist",
     "build": "tsc",
+    "clean": "rimraf dist",
     "dist": "yarn clean && yarn build",
     "prettier": "prettier --write \"src/*.ts\" \"spec/*.js\"",
     "test": "yarn dist"
