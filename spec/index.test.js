@@ -3,12 +3,14 @@ const {JSZipCLI} = require('../dist');
 describe('JSZipCLI', () => {
   let jsZipCLI;
 
+  beforeEach(() => {
+    jsZipCLI = new JSZipCLI();
+  });
+
   it('adds specified files', async () => {
     const files = ['a.js', 'b.js'];
 
-    jsZipCLI = new JSZipCLI({
-      entries: files,
-    });
+    jsZipCLI.add(files);
 
     spyOn(jsZipCLI, 'checkFile').and.returnValue(Promise.resolve());
 
