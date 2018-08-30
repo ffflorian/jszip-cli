@@ -12,7 +12,7 @@ program
   .name(name.replace(/^@[^/]+\//, ''))
   .version(version, '-v, --version')
   .description(description)
-  .option('-o, --output <dir>', 'Specify the output directory (default: stdout)')
+  .option('-o, --output <file|dir>', 'Specify the output file or directory (default: stdout)')
   .option('-l, --level <number>', 'Specify the compression level', 5)
   .option('-i, --ignore <entry>', 'Ignore a file or directory');
 
@@ -24,7 +24,7 @@ program
     new JSZipCLI({
       ignoreEntries: options.parent.ignore ? [options.parent.ignore] : undefined,
       level: options.parent.level,
-      outputDir: options.parent.output,
+      outputFile: options.parent.output,
     })
       .add(entries)
       .save()
@@ -43,7 +43,7 @@ program
   .action((files, options) => {
     new JSZipCLI({
       ignoreEntries: options.parent.ignore ? [options.parent.ignore] : undefined,
-      outputDir: options.parent.output,
+      outputFile: options.parent.output,
     })
       .extract(files)
       .then(() => console.log('Done.'))

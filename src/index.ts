@@ -3,7 +3,6 @@ import * as path from 'path';
 import * as JSZip from 'jszip';
 import {promisify} from 'util';
 
-const fsChmodPromise = promisify(fs.chmod);
 const fsAccessPromise = promisify(fs.access);
 const fsLstatPromise = promisify(fs.lstat);
 const fsMkdirPromise = promisify(fs.mkdir);
@@ -14,7 +13,7 @@ const fsReadLinkPromise = promisify(fs.readlink);
 export interface CLIOptions {
   ignoreEntries?: string[];
   level?: number;
-  outputDir?: string;
+  outputFile?: string;
 }
 
 export class JSZipCLI {
@@ -22,16 +21,16 @@ export class JSZipCLI {
   private entries: string[];
   private ignoreEntries: RegExp[];
   private compressionLevel: number;
-  private outputDir: string | null;
+  private outputFile: string | null;
 
   constructor(options: CLIOptions) {
-    const {ignoreEntries = [], level = 5, outputDir = null} = options || {};
+    const {ignoreEntries = [], level = 5, outputFile = null} = options || {};
 
     this.jszip = new JSZip();
     this.compressionLevel = level;
     this.entries = [];
     this.ignoreEntries = ignoreEntries.map(entry => new RegExp(entry.replace('*', '.*')));
-    this.outputDir = typeof outputDir === 'string' ? path.resolve(outputDir) : outputDir;
+    this.outputFile = typeof outputFile === 'string' ? path.resolve(outputFile) : outputFile;
   }
 
   private async addFile(filePath: string): Promise<void> {
@@ -104,8 +103,8 @@ export class JSZipCLI {
   public async extract(files: string[]): Promise<void> {
     for (const file of files) {
       this.jszip = new JSZip();
-      if (this.outputDir) {
-        await this.ensureDir(this.outputDir);
+      if (this.outputFile) {
+        await this.ensureDir(this.outputFile);
       }
 
       const resolvedPath = path.resolve(file);
@@ -117,8 +116,8 @@ export class JSZipCLI {
 
       await Promise.all(
         entries.map(async ([filePath, entry]) => {
-          if (this.outputDir) {
-            const resolvedFilePath = path.join(this.outputDir, filePath);
+          if (this.outputFile) {
+            const resolvedFilePath = path.join(this.outputFile, filePath);
             if (entry.dir) {
               await this.ensureDir(resolvedFilePath);
             } else {
@@ -155,12 +154,12 @@ export class JSZipCLI {
   public async save(): Promise<void> {
     await Promise.all(this.entries.map(entry => this.checkFile(entry)));
 
-    if (this.outputDir) {
-      if (!this.outputDir.match(/\.\w+$/)) {
-        this.outputDir = path.join(this.outputDir, 'data.zip');
+    if (this.outputFile) {
+      if (!this.outputFile.match(/\.\w+$/)) {
+        this.outputFile = path.join(this.outputFile, 'data.zip');
       }
 
-      await this.writeFileStream(this.getStream(), this.outputDir);
+      await this.writeFileStream(this.getStream(), this.outputFile);
     } else {
       await this.printStream(this.getStream());
     }

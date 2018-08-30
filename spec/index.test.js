@@ -4,7 +4,9 @@ describe('JSZipCLI', () => {
   let jsZipCLI;
 
   beforeEach(() => {
-    jsZipCLI = new JSZipCLI();
+    jsZipCLI = new JSZipCLI({
+      outputFile: 'empty'
+    });
   });
 
   it('adds specified files', async () => {
@@ -13,6 +15,7 @@ describe('JSZipCLI', () => {
     jsZipCLI.add(files);
 
     spyOn(jsZipCLI, 'checkFile').and.returnValue(Promise.resolve());
+    spyOn(jsZipCLI, 'writeFileStream').and.returnValue(Promise.resolve());
 
     await jsZipCLI.save();
 
