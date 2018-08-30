@@ -3,17 +3,21 @@ import * as path from 'path';
 import * as JSZip from 'jszip';
 import {promisify} from 'util';
 
-const fsAccessPromise = promisify(fs.access);
-const fsLstatPromise = promisify(fs.lstat);
-const fsMkdirPromise = promisify(fs.mkdir);
-const fsReadDirPromise = promisify(fs.readdir);
-const fsReadFilePromise = promisify(fs.readFile);
-const fsReadLinkPromise = promisify(fs.readlink);
+const fsPromise = {
+  access: promisify(fs.access),
+  chmod: promisify(fs.writeFile),
+  lstat: promisify(fs.lstat),
+  mkdir: promisify(fs.mkdir),
+  readDir: promisify(fs.readdir),
+  readFile: promisify(fs.readFile),
+  readLink: promisify(fs.readlink),
+  writeFile: promisify(fs.writeFile),
+};
 
 export interface CLIOptions {
   ignoreEntries?: string[];
   level?: number;
-  outputFile?: string;
+  outputEntry?: string;
 }
 
 export class JSZipCLI {
@@ -21,58 +25,60 @@ export class JSZipCLI {
   private entries: string[];
   private ignoreEntries: RegExp[];
   private compressionLevel: number;
-  private outputFile: string | null;
+  private outputEntry: string | null;
 
   constructor(options: CLIOptions) {
-    const {ignoreEntries = [], level = 5, outputFile = null} = options || {};
+    const {ignoreEntries = [], level = 5, outputEntry = null} = options || {};
 
     this.jszip = new JSZip();
     this.compressionLevel = level;
     this.entries = [];
     this.ignoreEntries = ignoreEntries.map(entry => new RegExp(entry.replace('*', '.*')));
-    this.outputFile = typeof outputFile === 'string' ? path.resolve(outputFile) : outputFile;
+    this.outputEntry = typeof outputEntry === 'string' ? path.resolve(outputEntry) : outputEntry;
   }
 
-  private async addFile(filePath: string): Promise<void> {
-    const fileData = await fsReadFilePromise(filePath);
+  private async addFile(filePath: string, fileMode: number): Promise<void> {
+    const fileData = await fsPromise.readFile(filePath);
     this.jszip.file(filePath, fileData, {
       compression: '',
+      dosPermissions: fileMode,
+      unixPermissions: fileMode,
     });
   }
 
-  private async checkFile(filePath: string): Promise<void> {
-    const fileStat = await fsLstatPromise(filePath);
+  private async checkEntry(filePath: string): Promise<void> {
+    const fileStat = await fsPromise.lstat(filePath);
     const ignoreEntry = this.ignoreEntries.some(entry => Boolean(filePath.match(entry)));
 
     if (ignoreEntry) {
       return;
     }
 
-    if (fileStat.isSymbolicLink()) {
-      await this.addLink(filePath);
-    } else if (fileStat.isDirectory()) {
+    if (fileStat.isDirectory()) {
       await this.walkDir(filePath);
     } else if (fileStat.isFile()) {
-      await this.addFile(filePath);
+      await this.addFile(filePath, fileStat.mode);
+    } else if (fileStat.isSymbolicLink()) {
+      await this.addLink(filePath, fileStat.mode);
     } else {
       throw new Error(`Can't read: ${filePath}`);
     }
   }
 
-  private async addLink(filePath: string): Promise<void> {
-    const fileData = await fsReadLinkPromise(filePath);
-    const {mode} = await fsLstatPromise(filePath);
-    this.jszip.file(filePath, fileData, {
-      dosPermissions: mode,
-      unixPermissions: mode,
+  private async addLink(linkPath: string, fileMode: number): Promise<void> {
+    const fileData = await fsPromise.readLink(linkPath);
+
+    this.jszip.file(linkPath, fileData, {
+      dosPermissions: fileMode,
+      unixPermissions: fileMode,
     });
   }
 
   private async walkDir(filePath: string): Promise<void> {
-    const files = await fsReadDirPromise(filePath);
+    const files = await fsPromise.readDir(filePath);
     for (const file of files) {
       const newPath = path.join(filePath, file);
-      await this.checkFile(newPath);
+      await this.checkEntry(newPath);
     }
   }
 
@@ -81,60 +87,58 @@ export class JSZipCLI {
     return this;
   }
 
-  private writeFileStream(fileStream: NodeJS.ReadableStream, filePath: string, fileMode?: number): Promise<void> {
-    return new Promise((resolve, reject) => {
-      const stream = fileStream.pipe(fs.createWriteStream(filePath, {
-        mode: fileMode,
-      }));
-      stream.on('finish', resolve);
-      stream.on('error', error => reject(error));
-    });
-  }
-
   private async ensureDir(dirPath: string): Promise<void> {
     try {
-      await fsAccessPromise(dirPath, fs.constants.R_OK);
-    } catch(error) {
-      console.log('Creating', dirPath)
-      await fsMkdirPromise(dirPath);
+      await fsPromise.access(dirPath, fs.constants.R_OK);
+    } catch (error) {
+      await fsPromise.mkdir(dirPath);
     }
   }
 
   public async extract(files: string[]): Promise<void> {
     for (const file of files) {
-      this.jszip = new JSZip();
-      if (this.outputFile) {
-        await this.ensureDir(this.outputFile);
+      const jszip = new JSZip();
+      if (this.outputEntry) {
+        await this.ensureDir(this.outputEntry);
       }
 
       const resolvedPath = path.resolve(file);
-      const entries: [string, JSZip.JSZipObject][] = [];
-      const data = await fsReadFilePromise(resolvedPath);
+      const data = await fsPromise.readFile(resolvedPath);
 
-      await this.jszip.loadAsync(data, {createFolders: true});
-      this.jszip.forEach((filePath, entry) => entries.push([filePath, entry]));
+      await jszip.loadAsync(data, {createFolders: true});
+
+      if (!this.outputEntry) {
+        this.printStream(jszip.generateNodeStream());
+        return;
+      }
+
+      const entries: [string, JSZip.JSZipObject][] = [];
+
+      jszip.forEach((filePath, entry) => entries.push([filePath, entry]));
 
       await Promise.all(
         entries.map(async ([filePath, entry]) => {
-          if (this.outputFile) {
-            const resolvedFilePath = path.join(this.outputFile, filePath);
-            if (entry.dir) {
-              await this.ensureDir(resolvedFilePath);
-            } else {
-              await this.writeFileStream(entry.nodeStream(), resolvedFilePath, entry.unixPermissions ? Number(entry.unixPermissions) : undefined);
-            }
+          const resolvedFilePath = path.join(this.outputEntry!, filePath);
+          if (entry.dir) {
+            await this.ensureDir(resolvedFilePath);
           } else {
-            this.printStream(entry.nodeStream());
+            const data = await entry.async('nodebuffer');
+            await fsPromise.writeFile(resolvedFilePath, data, {
+              encoding: 'utf-8',
+            });
+            if (entry.unixPermissions) {
+              await fsPromise.chmod(resolvedFilePath, entry.unixPermissions);
+            }
           }
         })
       );
     }
   }
 
-  public getStream(): NodeJS.ReadableStream {
+  public getBuffer(): Promise<Buffer> {
     const compressionType = this.compressionLevel === 0 ? 'STORE' : 'DEFLATE';
 
-    return this.jszip.generateNodeStream({
+    return this.jszip.generateAsync({
       type: 'nodebuffer',
       compression: compressionType,
       compressionOptions: {
@@ -147,21 +151,30 @@ export class JSZipCLI {
     return new Promise((resolve, reject) => {
       const stream = fileStream.pipe(process.stdout);
       stream.on('finish', resolve);
-      stream.on('error', error => reject(error));
+      stream.on('error', reject);
     });
   }
 
-  public async save(): Promise<void> {
-    await Promise.all(this.entries.map(entry => this.checkFile(entry)));
+  private async writeFile(data: Buffer, filePath: string): Promise<void> {
+    try {
+      await fsPromise.access(filePath, fs.constants.R_OK);
+    } catch (error) {
+      return fsPromise.writeFile(data, filePath);
+    }
+  }
 
-    if (this.outputFile) {
-      if (!this.outputFile.match(/\.\w+$/)) {
-        this.outputFile = path.join(this.outputFile, 'data.zip');
+  public async save(): Promise<void> {
+    await Promise.all(this.entries.map(entry => this.checkEntry(entry)));
+    const data = await this.getBuffer();
+
+    if (this.outputEntry) {
+      if (!this.outputEntry.match(/\.\w+$/)) {
+        this.outputEntry = path.join(this.outputEntry, 'data.zip');
       }
 
-      await this.writeFileStream(this.getStream(), this.outputFile);
+      await this.writeFile(data, this.outputEntry);
     } else {
-      await this.printStream(this.getStream());
+      process.stdout.write(data);
     }
   }
 }

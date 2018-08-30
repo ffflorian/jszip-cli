@@ -9,14 +9,27 @@ Run `yarn global add @ffflorian/jszip-cli` or `npm i -g @ffflorian/jszip-cli`.
 ## Usage
 
 ```
-Usage: jszip-cli [options] <entries...>
+Usage: jszip-cli [options] [command]
 
 A zip CLI based on jszip.
 
 Options:
 
-  -v, --version         output the version number
-  -o, --output <dir>    Specify the output directory (default: Current folder)
-  -i, --ignore <entry>  Ignore a file or directory
-  -h, --help            output usage information
+  -v, --version                    output the version number
+  -l, --level <number>             Specify the compression level (default: 5)
+  -o, --output <dir>               Specify the output directory (default: stdout)
+  -i, --ignore <entry>             Ignore a file or directory
+  -h, --help                       output usage information
+
+Commands:
+
+  add [options] <entries...>       Add files to the ZIP archive.
+  extract [options] <archives...>  Extract files from ZIP archive(s).
+```
+
+## Examples
+
+```
+jszip-cli add dist package.json -i *.map -o deploy.zip
+jszip-cli extract deploy.zip -o my_deployment/
 ```

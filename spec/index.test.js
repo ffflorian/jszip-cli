@@ -1,11 +1,12 @@
 const {JSZipCLI} = require('../dist');
+const fs = require('fs');
 
 describe('JSZipCLI', () => {
   let jsZipCLI;
 
   beforeEach(() => {
     jsZipCLI = new JSZipCLI({
-      outputFile: 'empty'
+      outputEntry: 'empty',
     });
   });
 
@@ -14,12 +15,13 @@ describe('JSZipCLI', () => {
 
     jsZipCLI.add(files);
 
-    spyOn(jsZipCLI, 'checkFile').and.returnValue(Promise.resolve());
-    spyOn(jsZipCLI, 'writeFileStream').and.returnValue(Promise.resolve());
+    spyOn(jsZipCLI, 'checkEntry').and.returnValue(Promise.resolve());
+    spyOn(jsZipCLI, 'writeFile').and.returnValue(Promise.resolve());
 
     await jsZipCLI.save();
 
-    expect(jsZipCLI.checkFile).toHaveBeenCalledWith('a.js');
-    expect(jsZipCLI.checkFile).toHaveBeenCalledWith('b.js');
+    expect(jsZipCLI.checkEntry).toHaveBeenCalledWith('a.js');
+    expect(jsZipCLI.checkEntry).toHaveBeenCalledWith('b.js');
+    expect(jsZipCLI.writeFile).toHaveBeenCalledTimes(1);
   });
 });
