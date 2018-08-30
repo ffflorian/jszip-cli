@@ -30,9 +30,9 @@ export class JSZipCLI {
 
     if (fileStat.isSymbolicLink()) {
       await this.addLink(jszip, filePath);
-    } else if (fileStat.isDirectory() ) {
+    } else if (fileStat.isDirectory()) {
       await this.walkDir(jszip, filePath);
-    } else if (fileStat.isFile() ) {
+    } else if (fileStat.isFile()) {
       await this.addFile(jszip, filePath);
     } else {
       throw new Error(`Unknown file: ${filePath}`);
