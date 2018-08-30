@@ -8,7 +8,7 @@ describe('JSZipCLI', () => {
 
     jsZipCLI = new JSZipCLI({
       entries: files,
-    })
+    });
 
     spyOn(jsZipCLI, 'checkFile').and.returnValue(Promise.resolve());
 
@@ -16,5 +16,5 @@ describe('JSZipCLI', () => {
 
     expect(jsZipCLI.checkFile).toHaveBeenCalledWith('a.js');
     expect(jsZipCLI.checkFile).toHaveBeenCalledWith('b.js');
-  })
-})
+  });
+});
