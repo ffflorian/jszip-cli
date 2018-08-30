@@ -17,7 +17,7 @@ program
   .action((entries, options) => {
     new JSZipCLI({
       entries,
-      ignoreEntries: options.ignore,
+      ignoreEntries: options.ignore ? [options.ignore] : undefined,
       outputFile: options.output,
     })
       .save()

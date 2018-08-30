@@ -3,24 +3,29 @@ import * as path from 'path';
 import * as JSZip from 'jszip';
 import {promisify} from 'util';
 
-const fsReadFilePromise = promisify(fs.readFile);
 const fsLstatPromise = promisify(fs.lstat);
-const fsReadLinkPromise = promisify(fs.readlink);
 const fsReadDirPromise = promisify(fs.readdir);
+const fsReadFilePromise = promisify(fs.readFile);
+const fsReadLinkPromise = promisify(fs.readlink);
+const fsWriteFilePromise = promisify(fs.writeFile);
 
 export interface CLIOptions {
-  ignoreEntries?: string[];
   entries: string[];
+  ignoreEntries?: string[];
   outputFile: string;
 }
 
 export class JSZipCLI {
-  private jszip: JSZip;
+  private readonly jszip: JSZip;
+  private entries: string[];
+  private ignoreEntries: RegExp[];
   private outputDir: string;
 
-  constructor(private readonly options: CLIOptions) {
+  constructor({entries = [], ignoreEntries = [], outputFile}: CLIOptions) {
     this.jszip = new JSZip();
-    this.outputDir = path.resolve(options.outputFile);
+    this.entries = entries;
+    this.ignoreEntries = ignoreEntries.map(entry => new RegExp(entry.replace('*', '.*')));
+    this.outputDir = path.resolve(outputFile);
   }
 
   private async addFile(filePath: string): Promise<void> {
@@ -30,6 +35,11 @@ export class JSZipCLI {
 
   private async checkFile(filePath: string): Promise<void> {
     const fileStat = await fsLstatPromise(filePath);
+    const ignoreEntry = this.ignoreEntries.some(entry => Boolean(filePath.match(entry)));
+
+    if (ignoreEntry) {
+      return;
+    }
 
     if (fileStat.isSymbolicLink()) {
       await this.addLink(filePath);
@@ -60,9 +70,9 @@ export class JSZipCLI {
       this.outputDir = path.join(this.outputDir, 'data.zip');
     }
 
-    await Promise.all(this.options.entries.map(entry => this.checkFile(entry)));
+    await Promise.all(this.entries.map(entry => this.checkFile(entry)));
     const data = await this.jszip.generateAsync({type: 'nodebuffer'});
 
-    await promisify(fs.writeFile)(this.outputDir, data);
+    await fsWriteFilePromise(this.outputDir, data);
   }
 }
