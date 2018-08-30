@@ -3,26 +3,33 @@ import * as path from 'path';
 import * as JSZip from 'jszip';
 import {promisify} from 'util';
 
+const fsReadFilePromise = promisify(fs.readFile);
+const fsLstatPromise = promisify(fs.lstat);
+const fsReadLinkPromise = promisify(fs.readlink);
+const fsReadDirPromise = promisify(fs.readdir);
+
 export interface CLIOptions {
   ignoreEntries?: string[];
   entries: string[];
-  outputDir: string;
+  outputFile: string;
 }
 
 export class JSZipCLI {
   private jszip: JSZip;
+  private outputDir: string;
 
   constructor(private readonly options: CLIOptions) {
     this.jszip = new JSZip();
+    this.outputDir = path.resolve(options.outputFile);
   }
 
   private async addFile(filePath: string): Promise<void> {
-    const fileData = await promisify(fs.readFile)(filePath);
+    const fileData = await fsReadFilePromise(filePath);
     this.jszip.file(filePath, fileData);
   }
 
   private async checkFile(filePath: string): Promise<void> {
-    const fileStat = await promisify(fs.lstat)(filePath);
+    const fileStat = await fsLstatPromise(filePath);
 
     if (fileStat.isSymbolicLink()) {
       await this.addLink(filePath);
@@ -36,12 +43,12 @@ export class JSZipCLI {
   }
 
   private async addLink(filePath: string): Promise<void> {
-    const fileData = await promisify(fs.readlink)(filePath);
+    const fileData = await fsReadLinkPromise(filePath);
     this.jszip.file(filePath, fileData);
   }
 
   private async walkDir(filePath: string): Promise<void> {
-    const files = await promisify(fs.readdir)(filePath);
+    const files = await fsReadDirPromise(filePath);
     for (const file of files) {
       const newPath = path.join(filePath, file);
       await this.checkFile(newPath);
@@ -49,11 +56,13 @@ export class JSZipCLI {
   }
 
   public async save(): Promise<void> {
-    const outputFile = path.join(this.options.outputDir, 'data.zip');
+    if (!this.outputDir.match(/\.\w+$/)) {
+      this.outputDir = path.join(this.outputDir, 'data.zip');
+    }
 
-    await Promise.all(this.options.entries.map(file => this.checkFile(file)));
+    await Promise.all(this.options.entries.map(entry => this.checkFile(entry)));
     const data = await this.jszip.generateAsync({type: 'nodebuffer'});
 
-    await promisify(fs.writeFile)(outputFile, data);
+    await promisify(fs.writeFile)(this.outputDir, data);
   }
 }

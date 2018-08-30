@@ -12,13 +12,13 @@ program
   .version(version, '-v, --version')
   .description(description)
   .arguments('<entries...>')
-  .option('-o, --output <dir>', 'Specify the output directory', path.resolve('.'))
+  .option('-o, --output <dir>', 'Specify the output directory', path.resolve('.', 'data.zip'))
   .option('-i, --ignore <entry>', 'Ignore a file or directory')
   .action((entries, options) => {
     new JSZipCLI({
       entries,
       ignoreEntries: options.ignore,
-      outputDir: options.output,
+      outputFile: options.output,
     })
       .save()
       .then(() => console.log('Done.'))
