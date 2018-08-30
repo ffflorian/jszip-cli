@@ -10,7 +10,6 @@ const fsReadLinkPromise = promisify(fs.readlink);
 const fsWriteFilePromise = promisify(fs.writeFile);
 
 export interface CLIOptions {
-  entries: string[];
   ignoreEntries?: string[];
   outputFile: string;
 }
@@ -21,9 +20,9 @@ export class JSZipCLI {
   private ignoreEntries: RegExp[];
   private outputDir: string;
 
-  constructor({entries = [], ignoreEntries = [], outputFile = '.'}: CLIOptions) {
+  constructor({ignoreEntries = [], outputFile = '.'}: CLIOptions) {
     this.jszip = new JSZip();
-    this.entries = entries;
+    this.entries = [];
     this.ignoreEntries = ignoreEntries.map(entry => new RegExp(entry.replace('*', '.*')));
     this.outputDir = path.resolve(outputFile);
   }
@@ -63,6 +62,11 @@ export class JSZipCLI {
       const newPath = path.join(filePath, file);
       await this.checkFile(newPath);
     }
+  }
+
+  public add(entries: string[]): JSZipCLI {
+    this.entries = entries;
+    return this;
   }
 
   public async save(): Promise<void> {
