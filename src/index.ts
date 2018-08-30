@@ -21,7 +21,7 @@ export class JSZipCLI {
   private ignoreEntries: RegExp[];
   private outputDir: string;
 
-  constructor({entries = [], ignoreEntries = [], outputFile}: CLIOptions) {
+  constructor({entries = [], ignoreEntries = [], outputFile = '.'}: CLIOptions) {
     this.jszip = new JSZip();
     this.entries = entries;
     this.ignoreEntries = ignoreEntries.map(entry => new RegExp(entry.replace('*', '.*')));
