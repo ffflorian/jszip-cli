@@ -7,7 +7,8 @@
     "@types/jszip": "3.1.4",
     "@types/node": "10.9.4",
     "commander": "2.17.1",
-    "jszip": "3.1.5"
+    "jszip": "3.1.5",
+    "logdown": "3.2.7"
   },
   "description": "A zip CLI based on jszip.",
   "devDependencies": {

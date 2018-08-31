@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as JSZip from 'jszip';
+import * as logdown from 'logdown';
 import {promisify} from 'util';
 
 const fsPromise = {
@@ -33,6 +34,7 @@ export class JSZipCLI {
   private ignoreEntries: RegExp[];
   private compressionLevel: number;
   private outputEntry: string | null;
+  private readonly logger: logdown.Logger;
 
   constructor(options: CLIOptions) {
     const {ignoreEntries = [], level = 5, outputEntry = null} = options || {};
@@ -42,7 +44,11 @@ export class JSZipCLI {
     this.entries = [];
     this.force = options.force || false;
     this.ignoreEntries = ignoreEntries.map(entry => new RegExp(entry.replace('*', '.*')));
-    this.outputEntry = typeof outputEntry === 'string' ? path.resolve(outputEntry) : outputEntry;
+    this.outputEntry = outputEntry ? path.resolve(outputEntry) : null;
+    this.logger = logdown('jszip-cli/JSZipCli', {
+      logger: console,
+      markdown: false,
+    });
   }
 
   private addDir(entry: Entry): JSZip {
@@ -79,11 +85,17 @@ export class JSZipCLI {
 
   private async checkEntry(entry: Entry, jszip: JSZip): Promise<void> {
     const fileStat = await fsPromise.lstat(entry.resolvedPath);
-    const ignoreEntry = this.ignoreEntries.some(ignoreEntry => Boolean(entry.resolvedPath.match(ignoreEntry)));
+    const ignoreEntries = this.ignoreEntries.filter(ignoreEntry => Boolean(entry.resolvedPath.match(ignoreEntry)));
 
-    if (ignoreEntry) {
+    if (ignoreEntries.length) {
+      this.logger.info(
+        `Found ${entry.resolvedPath}. Not adding since it's on the ignore list:`,
+        ignoreEntries.map(entry => String(entry))
+      );
       return;
     }
+
+    this.logger.info(`Found ${entry.resolvedPath}. Adding to the ZIP file.`);
 
     if (fileStat.isDirectory()) {
       const jszip = this.addDir(entry);
@@ -93,11 +105,13 @@ export class JSZipCLI {
     } else if (fileStat.isSymbolicLink()) {
       await this.addLink(entry, jszip);
     } else {
+      this.logger.info(`Unknown file type.`, fileStat);
       throw new Error(`Can't read: ${entry}`);
     }
   }
 
   private async walkDir(entry: Entry, jszip: JSZip): Promise<void> {
+    this.logger.info(`Walking directory ${entry.resolvedPath} ...`);
     const files = await fsPromise.readDir(entry.resolvedPath);
     for (const file of files) {
       const newZipPath = entry.zipPath + '/' + file;
@@ -113,6 +127,7 @@ export class JSZipCLI {
   }
 
   public add(rawEntries: string[]): JSZipCLI {
+    this.logger.info(`Adding ${rawEntries.length} entr${rawEntries.length === 1 ? 'y' : 'ies'} to ZIP file.`);
     this.entries = rawEntries.map(rawEntry => {
       const resolvedPath = path.resolve(rawEntry);
       const baseName = path.basename(rawEntry);
@@ -127,7 +142,9 @@ export class JSZipCLI {
   private async ensureDir(dirPath: string): Promise<void> {
     try {
       await fsPromise.access(dirPath, fs.constants.R_OK);
+      this.logger.info(`Directory ${dirPath} already exists. Not creating.`);
     } catch (error) {
+      this.logger.info(`Directory ${dirPath} doesn't exist yet. Creating.`);
       await fsPromise.mkdir(dirPath);
     }
   }
@@ -141,6 +158,7 @@ export class JSZipCLI {
 
       const resolvedPath = path.resolve(file);
       const data = await fsPromise.readFile(resolvedPath);
+      const entries: [string, JSZip.JSZipObject][] = [];
 
       await jszip.loadAsync(data, {createFolders: true});
 
@@ -148,8 +166,6 @@ export class JSZipCLI {
         this.printStream(jszip.generateNodeStream());
         return;
       }
-
-      const entries: [string, JSZip.JSZipObject][] = [];
 
       jszip.forEach((filePath, entry) => entries.push([filePath, entry]));
 
@@ -192,20 +208,74 @@ export class JSZipCLI {
     });
   }
 
-  private async writeFile(data: Buffer, filePath: string): Promise<void> {
-    try {
-      await fsPromise.access(filePath, fs.constants.R_OK);
-    } catch (error) {
-      return fsPromise.writeFile(filePath, data);
-    } finally {
-      if (this.force) {
-        return fsPromise.writeFile(filePath, data);
+  private async fileIsWritable(filePath: string): Promise<boolean> {
+    const dirExists = await this.dirExists(path.dirname(filePath));
+    if (dirExists) {
+      try {
+        await fsPromise.access(filePath, fs.constants.F_OK | fs.constants.R_OK);
+        this.logger.info(`File "${filePath}" already exists.`, this.force ? 'Forcing overwrite.' : '');
+        return this.force;
+      } catch (error) {
+        return true;
       }
-      throw new Error(`File "${filePath}" already exists.`);
+    }
+    return false;
+  }
+
+  private async dirExists(dirPath: string): Promise<boolean> {
+    try {
+      await fsPromise.access(dirPath, fs.constants.F_OK);
+      try {
+        await fsPromise.access(dirPath, fs.constants.W_OK);
+        return true;
+      } catch (error) {
+        this.logger.info(`Directory "${dirPath}" exists but is not writable.`);
+        return false;
+      }
+    } catch (error) {
+      this.logger.info(`Directory "${dirPath}" doesn't exist.`);
+      if (this.force) {
+        await this.ensureDir(dirPath);
+        return true;
+      }
+      return false;
+    }
+  }
+
+  private async writeFile(data: Buffer, filePath: string): Promise<void> {
+    const fileIsWritable = await this.fileIsWritable(filePath);
+    if (fileIsWritable) {
+      return fsPromise.writeFile(filePath, data);
+    }
+    throw new Error(`File "${this.outputEntry}" already exists.`);
+  }
+
+  private async checkOutput(): Promise<void> {
+    if (this.outputEntry) {
+      if (this.outputEntry.match(/\.\w+$/)) {
+        const dirExists = await this.dirExists(path.dirname(this.outputEntry));
+
+        if (!dirExists) {
+          throw new Error(`Directory "${path.dirname(this.outputEntry)}" doesn't exist or is not writable.`);
+        }
+
+        const fileIsWritable = await this.fileIsWritable(this.outputEntry);
+        if (!fileIsWritable) {
+          throw new Error(`File "${this.outputEntry}" already exists.`);
+        }
+      } else {
+        const dirExists = await this.dirExists(this.outputEntry);
+
+        if (!dirExists) {
+          throw new Error(`Directory "${this.outputEntry}" doesn't exist or is not writable.`);
+        }
+      }
     }
   }
 
   public async save(): Promise<void> {
+    await this.checkOutput();
+
     await Promise.all(this.entries.map(entry => this.checkEntry(entry, this.jszip)));
     const data = await this.getBuffer();
 
