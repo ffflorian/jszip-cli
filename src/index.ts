@@ -42,31 +42,39 @@ export class JSZipCLI {
     this.outputEntry = typeof outputEntry === 'string' ? path.resolve(outputEntry) : outputEntry;
   }
 
-  private async addFile(entry: Entry): Promise<void> {
-    const {resolvedPath, zipPath} = entry;
-    const fileData = await fsPromise.readFile(resolvedPath, {encoding: 'utf-8'});
-    const fileStat = await fsPromise.lstat(resolvedPath);
-    console.log({resolvedPath, zipPath});
+  private addDir(entry: Entry): JSZip {
+    return this.jszip.folder(entry.zipPath);
+  }
 
-    this.jszip.file(zipPath, fileData, {
+  private async addFile(entry: Entry, jszip: JSZip): Promise<void> {
+    const {resolvedPath} = entry;
+    const fileName = path.basename(resolvedPath);
+    const fileData = await fsPromise.readFile(resolvedPath);
+    const fileStat = await fsPromise.lstat(resolvedPath);
+
+    jszip.file(fileName, fileData, {
+      date: fileStat.mtime,
+      createFolders: false,
+      binary: true,
+      dir: false,
       dosPermissions: fileStat.mode,
       unixPermissions: fileStat.mode,
     });
   }
 
-  private async addLink(entry: Entry): Promise<void> {
-    const fileName = path.basename(entry.resolvedPath);
-    const jsZipPath = entry.zipPath + '/' + fileName;
+  private async addLink(entry: Entry, jszip: JSZip): Promise<void> {
+    const {resolvedPath} = entry;
+    const fileName = path.basename(resolvedPath);
     const fileData = await fsPromise.readLink(entry.resolvedPath);
     const fileStat = await fsPromise.lstat(entry.resolvedPath);
 
-    this.jszip.file(jsZipPath, fileData, {
+    jszip.file(fileName, fileData, {
       dosPermissions: fileStat.mode,
       unixPermissions: fileStat.mode,
     });
   }
 
-  private async checkEntry(entry: Entry): Promise<void> {
+  private async checkEntry(entry: Entry, jszip: JSZip): Promise<void> {
     const fileStat = await fsPromise.lstat(entry.resolvedPath);
     const ignoreEntry = this.ignoreEntries.some(ignoreEntry => Boolean(entry.resolvedPath.match(ignoreEntry)));
 
@@ -75,25 +83,29 @@ export class JSZipCLI {
     }
 
     if (fileStat.isDirectory()) {
-      await this.walkDir(entry);
+      const jszip = this.addDir(entry);
+      await this.walkDir(entry, jszip);
     } else if (fileStat.isFile()) {
-      await this.addFile(entry);
+      await this.addFile(entry, jszip);
     } else if (fileStat.isSymbolicLink()) {
-      await this.addLink(entry);
+      await this.addLink(entry, jszip);
     } else {
       throw new Error(`Can't read: ${entry}`);
     }
   }
 
-  private async walkDir(entry: Entry): Promise<void> {
+  private async walkDir(entry: Entry, jszip: JSZip): Promise<void> {
     const files = await fsPromise.readDir(entry.resolvedPath);
     for (const file of files) {
       const newZipPath = entry.zipPath + '/' + file;
       const newResolvedPath = path.join(entry.resolvedPath, file);
-      await this.checkEntry({
-        resolvedPath: newResolvedPath,
-        zipPath: newZipPath,
-      });
+      await this.checkEntry(
+        {
+          resolvedPath: newResolvedPath,
+          zipPath: newZipPath,
+        },
+        jszip
+      );
     }
   }
 
@@ -187,7 +199,7 @@ export class JSZipCLI {
   }
 
   public async save(): Promise<void> {
-    await Promise.all(this.entries.map(entry => this.checkEntry(entry)));
+    await Promise.all(this.entries.map(entry => this.checkEntry(entry, this.jszip)));
     const data = await this.getBuffer();
 
     if (this.outputEntry) {
