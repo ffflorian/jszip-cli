@@ -20,9 +20,14 @@ export interface CLIOptions {
   outputEntry?: string;
 }
 
+export interface Entry {
+  resolvedPath: string;
+  zipPath: string;
+}
+
 export class JSZipCLI {
   private jszip: JSZip;
-  private entries: string[];
+  private entries: Entry[];
   private ignoreEntries: RegExp[];
   private compressionLevel: number;
   private outputEntry: string | null;
@@ -37,53 +42,70 @@ export class JSZipCLI {
     this.outputEntry = typeof outputEntry === 'string' ? path.resolve(outputEntry) : outputEntry;
   }
 
-  private async addFile(filePath: string, fileMode: number): Promise<void> {
-    const fileData = await fsPromise.readFile(filePath);
-    this.jszip.file(filePath, fileData, {
-      compression: '',
-      dosPermissions: fileMode,
-      unixPermissions: fileMode,
+  private async addFile(entry: Entry): Promise<void> {
+    const {resolvedPath, zipPath} = entry;
+    const fileData = await fsPromise.readFile(resolvedPath, {encoding: 'utf-8'});
+    const fileStat = await fsPromise.lstat(resolvedPath);
+    console.log({resolvedPath, zipPath});
+
+    this.jszip.file(zipPath, fileData, {
+      dosPermissions: fileStat.mode,
+      unixPermissions: fileStat.mode,
     });
   }
 
-  private async checkEntry(filePath: string): Promise<void> {
-    const fileStat = await fsPromise.lstat(filePath);
-    const ignoreEntry = this.ignoreEntries.some(entry => Boolean(filePath.match(entry)));
+  private async addLink(entry: Entry): Promise<void> {
+    const fileName = path.basename(entry.resolvedPath);
+    const jsZipPath = entry.zipPath + '/' + fileName;
+    const fileData = await fsPromise.readLink(entry.resolvedPath);
+    const fileStat = await fsPromise.lstat(entry.resolvedPath);
+
+    this.jszip.file(jsZipPath, fileData, {
+      dosPermissions: fileStat.mode,
+      unixPermissions: fileStat.mode,
+    });
+  }
+
+  private async checkEntry(entry: Entry): Promise<void> {
+    const fileStat = await fsPromise.lstat(entry.resolvedPath);
+    const ignoreEntry = this.ignoreEntries.some(ignoreEntry => Boolean(entry.resolvedPath.match(ignoreEntry)));
 
     if (ignoreEntry) {
       return;
     }
 
     if (fileStat.isDirectory()) {
-      await this.walkDir(filePath);
+      await this.walkDir(entry);
     } else if (fileStat.isFile()) {
-      await this.addFile(filePath, fileStat.mode);
+      await this.addFile(entry);
     } else if (fileStat.isSymbolicLink()) {
-      await this.addLink(filePath, fileStat.mode);
+      await this.addLink(entry);
     } else {
-      throw new Error(`Can't read: ${filePath}`);
+      throw new Error(`Can't read: ${entry}`);
     }
   }
 
-  private async addLink(linkPath: string, fileMode: number): Promise<void> {
-    const fileData = await fsPromise.readLink(linkPath);
-
-    this.jszip.file(linkPath, fileData, {
-      dosPermissions: fileMode,
-      unixPermissions: fileMode,
-    });
-  }
-
-  private async walkDir(filePath: string): Promise<void> {
-    const files = await fsPromise.readDir(filePath);
+  private async walkDir(entry: Entry): Promise<void> {
+    const files = await fsPromise.readDir(entry.resolvedPath);
     for (const file of files) {
-      const newPath = path.join(filePath, file);
-      await this.checkEntry(newPath);
+      const newZipPath = entry.zipPath + '/' + file;
+      const newResolvedPath = path.join(entry.resolvedPath, file);
+      await this.checkEntry({
+        resolvedPath: newResolvedPath,
+        zipPath: newZipPath,
+      });
     }
   }
 
-  public add(entries: string[]): JSZipCLI {
-    this.entries = entries;
+  public add(rawEntries: string[]): JSZipCLI {
+    this.entries = rawEntries.map(rawEntry => {
+      const resolvedPath = path.resolve(rawEntry);
+      const baseName = path.basename(rawEntry);
+      return {
+        resolvedPath,
+        zipPath: baseName,
+      };
+    });
     return this;
   }
 
@@ -159,8 +181,9 @@ export class JSZipCLI {
     try {
       await fsPromise.access(filePath, fs.constants.R_OK);
     } catch (error) {
-      return fsPromise.writeFile(data, filePath);
+      return fsPromise.writeFile(filePath, data);
     }
+    throw new Error('File already exists.');
   }
 
   public async save(): Promise<void> {
