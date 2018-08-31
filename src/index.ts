@@ -15,6 +15,7 @@ const fsPromise = {
 };
 
 export interface CLIOptions {
+  force?: boolean;
   ignoreEntries?: string[];
   level?: number;
   outputEntry?: string;
@@ -28,6 +29,7 @@ export interface Entry {
 export class JSZipCLI {
   private jszip: JSZip;
   private entries: Entry[];
+  private force: boolean;
   private ignoreEntries: RegExp[];
   private compressionLevel: number;
   private outputEntry: string | null;
@@ -38,6 +40,7 @@ export class JSZipCLI {
     this.jszip = new JSZip();
     this.compressionLevel = level;
     this.entries = [];
+    this.force = options.force || false;
     this.ignoreEntries = ignoreEntries.map(entry => new RegExp(entry.replace('*', '.*')));
     this.outputEntry = typeof outputEntry === 'string' ? path.resolve(outputEntry) : outputEntry;
   }
@@ -194,8 +197,13 @@ export class JSZipCLI {
       await fsPromise.access(filePath, fs.constants.R_OK);
     } catch (error) {
       return fsPromise.writeFile(filePath, data);
+    } finally {
+      if (this.force) {
+        return fsPromise.writeFile(filePath, data);
+      }
+
+      throw new Error('File already exists.');
     }
-    throw new Error('File already exists.');
   }
 
   public async save(): Promise<void> {

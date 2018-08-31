@@ -19,6 +19,7 @@ Options:
   -l, --level <number>             Specify the compression level (default: 5)
   -o, --output <dir>               Specify the output directory (default: stdout)
   -i, --ignore <entry>             Ignore a file or directory
+  -f, --force                      Force overwriting files
   -h, --help                       output usage information
 
 Commands:
