@@ -20,8 +20,8 @@ describe('JSZipCLI', () => {
 
     await jsZipCLI.save();
 
-    expect(jsZipCLI.checkEntry).toHaveBeenCalledWith('a.js');
-    expect(jsZipCLI.checkEntry).toHaveBeenCalledWith('b.js');
+    expect(jsZipCLI.checkEntry).toHaveBeenCalledWith(jasmine.objectContaining({zipPath: 'a.js'}));
+    expect(jsZipCLI.checkEntry).toHaveBeenCalledWith(jasmine.objectContaining({zipPath: 'b.js'}));
     expect(jsZipCLI.writeFile).toHaveBeenCalledTimes(1);
   });
 });
