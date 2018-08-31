@@ -40,7 +40,7 @@ program
         }
       })
       .catch(error => {
-        console.error(error);
+        console.error('Error:', error.message);
         process.exit(1);
       });
   });
@@ -60,9 +60,13 @@ program
       outputEntry: options.parent.output,
     })
       .extract(files)
-      .then(() => console.log('Done.'))
+      .then(() => {
+        if (options.parent.output) {
+          console.log('Done.');
+        }
+      })
       .catch(error => {
-        console.error(error);
+        console.error('Error:', error.message);
         process.exit(1);
       });
   });

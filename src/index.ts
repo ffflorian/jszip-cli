@@ -201,8 +201,7 @@ export class JSZipCLI {
       if (this.force) {
         return fsPromise.writeFile(filePath, data);
       }
-
-      throw new Error('File already exists.');
+      throw new Error(`File "${filePath}" already exists.`);
     }
   }
 
