@@ -1,5 +1,6 @@
+const JSZip = require('jszip');
 const {JSZipCLI} = require('../dist');
-const fs = require('fs');
+
 
 describe('JSZipCLI', () => {
   let jsZipCLI;
@@ -15,13 +16,14 @@ describe('JSZipCLI', () => {
 
     jsZipCLI.add(files);
 
+    spyOn(jsZipCLI, 'checkOutput').and.returnValue(Promise.resolve());
     spyOn(jsZipCLI, 'checkEntry').and.returnValue(Promise.resolve());
     spyOn(jsZipCLI, 'writeFile').and.returnValue(Promise.resolve());
 
     await jsZipCLI.save();
 
-    expect(jsZipCLI.checkEntry).toHaveBeenCalledWith(jasmine.objectContaining({zipPath: 'a.js'}));
-    expect(jsZipCLI.checkEntry).toHaveBeenCalledWith(jasmine.objectContaining({zipPath: 'b.js'}));
+    expect(jsZipCLI.checkEntry).toHaveBeenCalledWith(jasmine.objectContaining({zipPath: 'a.js'}), jasmine.any(JSZip));
+    expect(jsZipCLI.checkEntry).toHaveBeenCalledWith(jasmine.objectContaining({zipPath: 'b.js'}), jasmine.any(JSZip));
     expect(jsZipCLI.writeFile).toHaveBeenCalledTimes(1);
   });
 });
