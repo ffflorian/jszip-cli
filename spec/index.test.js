@@ -19,8 +19,14 @@ describe('BuildService', () => {
 
     await jsZipCLI.save();
 
-    expect(buildService.checkEntry).toHaveBeenCalledWith(jasmine.objectContaining({zipPath: 'a.js'}), jasmine.any(JSZip));
-    expect(buildService.checkEntry).toHaveBeenCalledWith(jasmine.objectContaining({zipPath: 'b.js'}), jasmine.any(JSZip));
+    expect(buildService.checkEntry).toHaveBeenCalledWith(
+      jasmine.objectContaining({zipPath: 'a.js'}),
+      jasmine.any(JSZip)
+    );
+    expect(buildService.checkEntry).toHaveBeenCalledWith(
+      jasmine.objectContaining({zipPath: 'b.js'}),
+      jasmine.any(JSZip)
+    );
     expect(buildService.fileService.writeFile).toHaveBeenCalledTimes(1);
   });
 });

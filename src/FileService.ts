@@ -32,7 +32,10 @@ class FileService {
     if (dirExists) {
       try {
         await fsPromise.access(filePath, fs.constants.F_OK | fs.constants.R_OK);
-        this.logger.info(`File "${filePath}" already exists.`, this.options.force ? 'Forcing overwrite.' : 'Not overwriting.');
+        this.logger.info(
+          `File "${filePath}" already exists.`,
+          this.options.force ? 'Forcing overwrite.' : 'Not overwriting.'
+        );
         return this.options.force;
       } catch (error) {
         return true;

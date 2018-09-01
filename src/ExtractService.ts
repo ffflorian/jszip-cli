@@ -68,4 +68,4 @@ class ExtractService {
   }
 }
 
-export {ExtractService}
+export {ExtractService};

@@ -28,7 +28,6 @@ class BuildService {
     this.outputEntry = this.options.outputEntry ? path.resolve(this.options.outputEntry) : null;
   }
 
-
   private addDir(entry: Entry): JSZip {
     return this.jszip.folder(entry.zipPath);
   }
