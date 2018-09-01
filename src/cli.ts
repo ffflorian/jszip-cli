@@ -11,20 +11,20 @@ program
   .name(name.replace(/^@[^/]+\//, ''))
   .version(version, '-v, --version')
   .description(description)
-  .option('-l, --level <number>', 'Specify the compression level', 5)
-  .option('-o, --output <dir>', 'Specify the output directory (default: stdout)')
-  .option('-i, --ignore <entry>', 'Ignore a file or directory')
-  .option('-f, --force', 'Force overwriting files', false)
-  .option('-V, --verbose', 'Enable logging', false);
+  .option('-o, --output <dir>', 'set the output directory (default: stdout)')
+  .option('-i, --ignore <entry>', 'ignore a file or directory')
+  .option('-f, --force', 'force overwriting files (default: false)')
+  .option('-l, --level <number>', 'set the compression level', 5)
+  .option('-V, --verbose', 'enable logging (default: false)');
 
 program
   .command('add')
-  .description('Add files to the ZIP archive.')
-  .option('-l, --level <number>', 'Specify the compression level', 5)
-  .option('-o, --output <dir>', 'Specify the output directory (default: stdout)')
-  .option('-i, --ignore <entry>', 'Ignore a file or directory')
-  .option('-f, --force', 'Force overwriting files', false)
-  .option('-V, --verbose', 'Enable logging', false)
+  .description('add files to a new ZIP archive')
+  .option('-o, --output <dir>', 'set the output directory (default: stdout)')
+  .option('-i, --ignore <entry>', 'ignore a file or directory')
+  .option('-f, --force', 'force overwriting files (default: false)')
+  .option('-l, --level <number>', 'set the compression level', 5)
+  .option('-V, --verbose', 'enable logging (default: false)')
   .arguments('<entries...>')
   .action((entries: string[], {parent}: program.Command) => {
     new JSZipCLI({
@@ -45,13 +45,12 @@ program
 
 program
   .command('extract')
-  .description('Extract files from ZIP archive(s).')
-  .option('-l, --level <number>', 'Specify the compression level', 5)
-  .option('-o, --output <dir>', 'Specify the output directory (default: stdout)')
-  .option('-i, --ignore <entry>', 'Ignore a file or directory')
-  .option('-V, --verbose', 'Enable logging', false)
-  .option('-f, --force', 'Force overwriting files', false)
-  .option('-V, --verbose', 'Enable logging', false)
+  .description('extract files from ZIP archive(s)')
+  .option('-o, --output <dir>', 'set the output directory (default: stdout)')
+  .option('-i, --ignore <entry>', 'ignore a file or directory')
+  .option('-f, --force', 'force overwriting files (default: false)')
+  .option('-l, --level <number>', 'set the compression level', 5)
+  .option('-V, --verbose', 'enable logging (default: false)')
   .arguments('<archives...>')
   .action((files: string[], {parent}: program.Command) => {
     new JSZipCLI({
@@ -67,6 +66,11 @@ program
         process.exit(1);
       });
   });
+
+program
+  .command('help')
+  .description('output usage information')
+  .action(() => program.help());
 
 program.parse(process.argv);
 

@@ -16,17 +16,18 @@ A zip CLI based on jszip.
 Options:
 
   -v, --version                    output the version number
-  -l, --level <number>             Specify the compression level (default: 5)
-  -o, --output <dir>               Specify the output directory (default: stdout)
-  -i, --ignore <entry>             Ignore a file or directory
-  -f, --force                      Force overwriting files
-  -V, --verbose                    Enable logging
+  -o, --output <dir>               set the output directory (default: stdout)
+  -i, --ignore <entry>             ignore a file or directory
+  -f, --force                      force overwriting files (default: false)
+  -l, --level <number>             set the compression level (default: 5)
+  -V, --verbose                    enable logging (default: false)
   -h, --help                       output usage information
 
 Commands:
 
-  add [options] <entries...>       Add files to the ZIP archive.
-  extract [options] <archives...>  Extract files from ZIP archive(s).
+  add [options] <entries...>       add files to a new ZIP archive
+  extract [options] <archives...>  extract files from ZIP archive(s)
+  help                             output usage information
 ```
 
 ## Examples
