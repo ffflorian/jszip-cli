@@ -20,6 +20,7 @@ Options:
   -o, --output <dir>               Specify the output directory (default: stdout)
   -i, --ignore <entry>             Ignore a file or directory
   -f, --force                      Force overwriting files
+  -V, --verbose                    Enable logging
   -h, --help                       output usage information
 
 Commands:

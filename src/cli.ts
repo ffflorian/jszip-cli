@@ -15,7 +15,8 @@ program
   .option('-l, --level <number>', 'Specify the compression level', 5)
   .option('-o, --output <dir>', 'Specify the output directory (default: stdout)')
   .option('-i, --ignore <entry>', 'Ignore a file or directory')
-  .option('-f, --force', 'Force overwriting files', false);
+  .option('-f, --force', 'Force overwriting files', false)
+  .option('-V, --verbose', 'Enable logging', false);
 
 program
   .command('add')
@@ -24,6 +25,7 @@ program
   .option('-o, --output <dir>', 'Specify the output directory (default: stdout)')
   .option('-i, --ignore <entry>', 'Ignore a file or directory')
   .option('-f, --force', 'Force overwriting files', false)
+  .option('-V, --verbose', 'Enable logging', false)
   .arguments('<entries...>')
   .action((entries, options) => {
     new JSZipCLI({
@@ -31,6 +33,7 @@ program
       ignoreEntries: options.parent.ignore ? [options.parent.ignore] : undefined,
       level: options.parent.level,
       outputEntry: options.parent.output,
+      verbose: options.parent.verbose,
     })
       .add(entries)
       .save()
@@ -51,13 +54,16 @@ program
   .option('-l, --level <number>', 'Specify the compression level', 5)
   .option('-o, --output <dir>', 'Specify the output directory (default: stdout)')
   .option('-i, --ignore <entry>', 'Ignore a file or directory')
+  .option('-V, --verbose', 'Enable logging', false)
   .option('-f, --force', 'Force overwriting files', false)
+  .option('-V, --verbose', 'Enable logging', false)
   .arguments('<archives...>')
   .action((files, options) => {
     new JSZipCLI({
       force: options.parent.force,
       ignoreEntries: options.parent.ignore ? [options.parent.ignore] : undefined,
       outputEntry: options.parent.output,
+      verbose: options.parent.verbose,
     })
       .extract(files)
       .then(() => {

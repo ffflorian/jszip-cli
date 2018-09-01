@@ -20,6 +20,7 @@ export interface CLIOptions {
   ignoreEntries?: string[];
   level?: number;
   outputEntry?: string;
+  verbose?: boolean;
 }
 
 export interface Entry {
@@ -28,16 +29,17 @@ export interface Entry {
 }
 
 export class JSZipCLI {
-  private jszip: JSZip;
+  private readonly logger: logdown.Logger;
+  private compressionLevel: number;
   private entries: Entry[];
   private force: boolean;
   private ignoreEntries: RegExp[];
-  private compressionLevel: number;
+  private jszip: JSZip;
   private outputEntry: string | null;
-  private readonly logger: logdown.Logger;
+  private verbose: boolean;
 
   constructor(options: CLIOptions) {
-    const {ignoreEntries = [], level = 5, outputEntry = null} = options || {};
+    const {ignoreEntries = [], level = 5, outputEntry = null, verbose = false} = options || {};
 
     this.jszip = new JSZip();
     this.compressionLevel = level;
@@ -45,10 +47,12 @@ export class JSZipCLI {
     this.force = options.force || false;
     this.ignoreEntries = ignoreEntries.map(entry => new RegExp(entry.replace('*', '.*')));
     this.outputEntry = outputEntry ? path.resolve(outputEntry) : null;
+    this.verbose = verbose;
     this.logger = logdown('jszip-cli/JSZipCli', {
       logger: console,
       markdown: false,
     });
+    this.logger.state = { isEnabled: this.verbose };
   }
 
   private addDir(entry: Entry): JSZip {
@@ -213,7 +217,7 @@ export class JSZipCLI {
     if (dirExists) {
       try {
         await fsPromise.access(filePath, fs.constants.F_OK | fs.constants.R_OK);
-        this.logger.info(`File "${filePath}" already exists.`, this.force ? 'Forcing overwrite.' : '');
+        this.logger.info(`File "${filePath}" already exists.`, this.force ? 'Forcing overwrite.' : 'Not overwriting.');
         return this.force;
       } catch (error) {
         return true;
