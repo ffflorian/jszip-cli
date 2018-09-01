@@ -52,7 +52,7 @@ export class JSZipCLI {
       logger: console,
       markdown: false,
     });
-    this.logger.state = { isEnabled: this.verbose };
+    this.logger.state = {isEnabled: this.verbose};
   }
 
   private addDir(entry: Entry): JSZip {
