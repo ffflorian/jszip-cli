@@ -5,7 +5,9 @@ describe('BuildService', () => {
   let jsZipCLI;
 
   beforeEach(() => {
-    jsZipCLI = new JSZipCLI();
+    jsZipCLI = new JSZipCLI({
+      outputEntry: 'file.zip',
+    });
   });
 
   it('adds specified files', async () => {

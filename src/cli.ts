@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 import * as program from 'commander';
-
 import {JSZipCLI} from './';
 
 const {name, version, description}: {name: string; version: string; description: string} = require('../package.json');
@@ -27,21 +26,17 @@ program
   .option('-f, --force', 'Force overwriting files', false)
   .option('-V, --verbose', 'Enable logging', false)
   .arguments('<entries...>')
-  .action((entries, options) => {
+  .action((entries: string[], {parent}: program.Command) => {
     new JSZipCLI({
-      force: options.parent.force,
-      ignoreEntries: options.parent.ignore ? [options.parent.ignore] : undefined,
-      compressionLevel: options.parent.level,
-      outputEntry: options.parent.output,
-      verbose: options.parent.verbose,
+      ...(parent.force && {force: parent.force}),
+      ...(parent.ignore && {ignoreEntries: [parent.ignore]}),
+      ...(parent.level && {compressionLevel: parent.level}),
+      ...(parent.output && {outputEntry: parent.output}),
+      ...(parent.verbose && {verbose: parent.verbose}),
     })
       .add(entries)
       .save()
-      .then(() => {
-        if (options.parent.output) {
-          console.log('Done.');
-        }
-      })
+      .then(() => parent.output && console.log('Done.'))
       .catch(error => {
         console.error('Error:', error.message);
         process.exit(1);
@@ -58,19 +53,15 @@ program
   .option('-f, --force', 'Force overwriting files', false)
   .option('-V, --verbose', 'Enable logging', false)
   .arguments('<archives...>')
-  .action((files, options) => {
+  .action((files: string[], {parent}: program.Command) => {
     new JSZipCLI({
-      force: options.parent.force,
-      ignoreEntries: options.parent.ignore ? [options.parent.ignore] : undefined,
-      outputEntry: options.parent.output,
-      verbose: options.parent.verbose,
+      ...(parent.force && {force: parent.force}),
+      ...(parent.ignore && {ignoreEntries: [parent.ignore]}),
+      ...(parent.output && {outputEntry: parent.output}),
+      ...(parent.verbose && {verbose: parent.verbose}),
     })
       .extract(files)
-      .then(() => {
-        if (options.parent.output) {
-          console.log('Done.');
-        }
-      })
+      .then(() => parent.output && console.log('Done.'))
       .catch(error => {
         console.error('Error:', error.message);
         process.exit(1);

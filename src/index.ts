@@ -15,7 +15,7 @@ export class JSZipCLI {
   private readonly extractService: ExtractService;
   private options: Required<CLIOptions>;
 
-  constructor(options?: CLIOptions) {
+  constructor(options: CLIOptions = defaultOptions) {
     this.options = {...defaultOptions, ...options};
     this.buildService = new BuildService(this.options);
     this.extractService = new ExtractService(this.options);
