@@ -32,6 +32,6 @@ Commands:
 ## Examples
 
 ```
-jszip-cli add dist package.json -i *.map -o deploy.zip
-jszip-cli extract deploy.zip -o my_deployment/
+jszip-cli add -i *.map -o deploy.zip dist/ package.json
+jszip-cli extract deploy.zip -o deployment_files/
 ```
