@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as logdown from 'logdown';
 import {promisify} from 'util';
-import {CLIOptions, Entry} from './Interfaces';
+import {CLIOptions} from './Interfaces';
 
 const fsPromise = {
   access: promisify(fs.access),
@@ -17,8 +17,8 @@ const fsPromise = {
 
 class FileService {
   private readonly logger: logdown.Logger;
-  private readonly options: CLIOptions;
-  constructor(options: CLIOptions) {
+  private readonly options: Required<CLIOptions>;
+  constructor(options: Required<CLIOptions>) {
     this.options = options;
     this.logger = logdown('jszip-cli/FileService', {
       logger: console,

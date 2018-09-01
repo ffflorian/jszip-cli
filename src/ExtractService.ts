@@ -7,9 +7,9 @@ import {fsPromise, FileService} from './FileService';
 class ExtractService {
   private readonly fileService: FileService;
   private readonly logger: logdown.Logger;
-  private readonly options: CLIOptions;
+  private readonly options: Required<CLIOptions>;
 
-  constructor(options: CLIOptions) {
+  constructor(options: Required<CLIOptions>) {
     this.fileService = new FileService(options);
     this.options = options;
     this.logger = logdown('jszip-cli/ExtractService', {

@@ -8,12 +8,12 @@ class BuildService {
   private readonly fileService: FileService;
   private readonly jszip: JSZip;
   private readonly logger: logdown.Logger;
-  private readonly options: CLIOptions;
+  private readonly options: Required<CLIOptions>;
   private entries: Entry[];
   private ignoreEntries: RegExp[];
   private outputEntry: string | null;
 
-  constructor(options: CLIOptions) {
+  constructor(options: Required<CLIOptions>) {
     this.fileService = new FileService(options);
     this.jszip = new JSZip();
     this.logger = logdown('jszip-cli/BuildService', {

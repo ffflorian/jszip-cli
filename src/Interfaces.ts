@@ -1,9 +1,9 @@
 interface CLIOptions {
-  force: boolean;
-  ignoreEntries: string[];
-  compressionLevel: number;
-  outputEntry: string | null;
-  verbose: boolean;
+  force?: boolean;
+  ignoreEntries?: string[];
+  compressionLevel?: number;
+  outputEntry?: string | null;
+  verbose?: boolean;
 }
 
 interface Entry {
