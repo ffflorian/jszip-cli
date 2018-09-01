@@ -59,6 +59,10 @@ class FileService {
     }
   }
 
+  public async fileStat(filePath: string): Promise<fs.Stats> {
+    return fsPromise.lstat(filePath);
+  }
+
   public async fileIsWritable(filePath: string): Promise<boolean> {
     const dirExists = await this.dirExists(path.dirname(filePath));
     if (dirExists) {
@@ -74,6 +78,15 @@ class FileService {
       }
     }
     return false;
+  }
+
+  public async readFile(filePath: string): Promise<Buffer> {
+    const fileStat = await this.fileStat(filePath);
+    if (fileStat.isSymbolicLink()) {
+      return fsPromise.readLink(filePath, {encoding: 'buffer'});
+    } else {
+      return fsPromise.readFile(filePath);
+    }
   }
 
   public async writeFile(data: Buffer, filePath: string): Promise<FileService> {

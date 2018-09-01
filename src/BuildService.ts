@@ -14,7 +14,7 @@ class BuildService {
   private entries: Entry[];
   private ignoreEntries: RegExp[];
   public outputFile: string | null;
-  public zippedFilesCount: number;
+  public compressedFilesCount: number;
 
   constructor(options: Required<CLIOptions>) {
     this.fileService = new FileService(options);
@@ -34,7 +34,7 @@ class BuildService {
       total: 100,
       width: 20,
     });
-    this.zippedFilesCount = 0;
+    this.compressedFilesCount = 0;
   }
 
   public add(rawEntries: string[]): BuildService {
@@ -51,8 +51,8 @@ class BuildService {
   }
 
   public getBuffer(): Promise<Buffer> {
-    let lastPercent = 0;
     const compressionType = this.options.compressionLevel === 0 ? 'STORE' : 'DEFLATE';
+    let lastPercent = 0;
 
     return this.jszip.generateAsync(
       {
@@ -63,7 +63,6 @@ class BuildService {
         },
       },
       ({percent}) => {
-        this.zippedFilesCount++;
         const diff = Math.floor(percent) - Math.floor(lastPercent);
         if (diff && !this.options.quiet) {
           this.progressBar.tick(diff);
@@ -94,8 +93,8 @@ class BuildService {
 
   private async addFile(entry: Entry): Promise<void> {
     const {resolvedPath, zipPath} = entry;
-    const fileData = await fsPromise.readFile(resolvedPath);
-    const fileStat = await fsPromise.lstat(resolvedPath);
+    const fileData = await this.fileService.readFile(resolvedPath);
+    const fileStat = await this.fileService.fileStat(resolvedPath);
 
     await this.jszip.file(zipPath, fileData, {
       createFolders: true,
@@ -103,23 +102,11 @@ class BuildService {
       //dosPermissions: fileStat.mode,
       unixPermissions: fileStat.mode,
     });
+
+    this.compressedFilesCount++;
   }
-
-  private async addLink(entry: Entry): Promise<void> {
-    const {resolvedPath, zipPath} = entry;
-    const fileData = await fsPromise.readLink(resolvedPath);
-    const fileStat = await fsPromise.lstat(resolvedPath);
-
-    await this.jszip.file(zipPath, fileData, {
-      date: fileStat.mtime,
-      createFolders: true,
-      //dosPermissions: fileStat.mode,
-      unixPermissions: fileStat.mode,
-    });
-  }
-
   private async checkEntry(entry: Entry): Promise<void> {
-    const fileStat = await fsPromise.lstat(entry.resolvedPath);
+    const fileStat = await this.fileService.fileStat(entry.resolvedPath);
     const ignoreEntries = this.ignoreEntries.filter(ignoreEntry => Boolean(entry.resolvedPath.match(ignoreEntry)));
 
     if (ignoreEntries.length) {
@@ -134,10 +121,8 @@ class BuildService {
 
     if (fileStat.isDirectory()) {
       await this.walkDir(entry);
-    } else if (fileStat.isFile()) {
+    } else if (fileStat.isFile() || fileStat.isSymbolicLink()) {
       await this.addFile(entry);
-    } else if (fileStat.isSymbolicLink()) {
-      await this.addLink(entry);
     } else {
       this.logger.info(`Unknown file type.`, {fileStat});
       console.info(`Can't read: ${entry.resolvedPath}. Ignoring.`);

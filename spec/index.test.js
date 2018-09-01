@@ -1,4 +1,4 @@
-const JSZip = require('jszip');
+const fs = require('fs');
 const {JSZipCLI} = require('../dist');
 
 describe('BuildService', () => {
@@ -7,6 +7,8 @@ describe('BuildService', () => {
   beforeEach(() => {
     jsZipCLI = new JSZipCLI({
       outputEntry: 'file.zip',
+      quiet: true,
+      verbose: true,
     });
   });
 
@@ -15,10 +17,15 @@ describe('BuildService', () => {
     const buildService = jsZipCLI.add(files);
 
     spyOn(buildService, 'checkOutput').and.returnValue(Promise.resolve());
-    spyOn(buildService, 'checkEntry').and.returnValue(Promise.resolve());
+    spyOn(buildService, 'checkEntry').and.callThrough();
+    spyOn(buildService.fileService, 'fileStat').and.returnValue(
+      Promise.resolve({isDirectory: () => false, isFile: () => true})
+    );
+    spyOn(buildService.fileService, 'readFile').and.returnValue(Promise.resolve(Buffer.from([])));
     spyOn(buildService.fileService, 'writeFile').and.returnValue(Promise.resolve());
 
-    await jsZipCLI.save();
+    const {compressedFilesCount} = await jsZipCLI.save();
+    expect(compressedFilesCount).toBe(2);
 
     expect(buildService.checkEntry).toHaveBeenCalledWith(jasmine.objectContaining({zipPath: 'a.js'}));
     expect(buildService.checkEntry).toHaveBeenCalledWith(jasmine.objectContaining({zipPath: 'b.js'}));

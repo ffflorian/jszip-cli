@@ -42,7 +42,12 @@ program
     })
       .add(entries)
       .save()
-      .then(({outputFile, zippedFilesCount}) => parent.output && !parent.quiet && console.log(`Done compressing ${zippedFilesCount} files to ${outputFile}.`))
+      .then(
+        ({outputFile, compressedFilesCount}) =>
+          parent.output &&
+          !parent.quiet &&
+          console.log(`Done compressing ${compressedFilesCount} files to ${outputFile}.`)
+      )
       .catch(error => {
         console.error('Error:', error.message);
         process.exit(1);
@@ -68,7 +73,10 @@ program
       ...(parent.verbose && {verbose: parent.verbose}),
     })
       .extract(archives)
-      .then(({outputDir, extractedFilesCount}) => parent.output && !parent.quiet && console.log(`Done extracting ${extractedFilesCount} files to ${outputDir}.`))
+      .then(
+        ({outputDir, extractedFilesCount}) =>
+          parent.output && !parent.quiet && console.log(`Done extracting ${extractedFilesCount} files to ${outputDir}.`)
+      )
       .catch(error => {
         console.error('Error:', error.message);
         process.exit(1);
