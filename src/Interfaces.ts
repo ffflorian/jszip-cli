@@ -3,6 +3,7 @@ interface CLIOptions {
   ignoreEntries?: string[];
   compressionLevel?: number;
   outputEntry?: string | null;
+  quiet?: boolean;
   verbose?: boolean;
 }
 

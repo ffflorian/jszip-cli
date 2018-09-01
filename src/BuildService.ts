@@ -1,6 +1,7 @@
 import * as logdown from 'logdown';
 import * as JSZip from 'jszip';
 import * as path from 'path';
+import * as progress from 'progress';
 import {CLIOptions, Entry} from './Interfaces';
 import {fsPromise, FileService} from './FileService';
 
@@ -9,22 +10,31 @@ class BuildService {
   private readonly jszip: JSZip;
   private readonly logger: logdown.Logger;
   private readonly options: Required<CLIOptions>;
+  private readonly progressBar: progress;
   private entries: Entry[];
   private ignoreEntries: RegExp[];
-  private outputEntry: string | null;
+  public outputFile: string | null;
+  public zippedFilesCount: number;
 
   constructor(options: Required<CLIOptions>) {
     this.fileService = new FileService(options);
     this.jszip = new JSZip();
+    this.options = options;
     this.logger = logdown('jszip-cli/BuildService', {
       logger: console,
       markdown: false,
     });
     this.logger.state = {isEnabled: options.verbose};
-    this.options = options;
     this.entries = [];
     this.ignoreEntries = this.options.ignoreEntries.map(entry => new RegExp(entry.replace('*', '.*')));
-    this.outputEntry = this.options.outputEntry ? path.resolve(this.options.outputEntry) : null;
+    this.outputFile = this.options.outputEntry ? path.resolve(this.options.outputEntry) : null;
+    this.progressBar = new progress('Compressing [:bar] :percent :elapseds', {
+      complete: '=',
+      incomplete: ' ',
+      total: 100,
+      width: 20,
+    });
+    this.zippedFilesCount = 0;
   }
 
   public add(rawEntries: string[]): BuildService {
@@ -41,15 +51,26 @@ class BuildService {
   }
 
   public getBuffer(): Promise<Buffer> {
+    let lastPercent = 0;
     const compressionType = this.options.compressionLevel === 0 ? 'STORE' : 'DEFLATE';
 
-    return this.jszip.generateAsync({
-      type: 'nodebuffer',
-      compression: compressionType,
-      compressionOptions: {
-        level: this.options.compressionLevel,
+    return this.jszip.generateAsync(
+      {
+        type: 'nodebuffer',
+        compression: compressionType,
+        compressionOptions: {
+          level: this.options.compressionLevel,
+        },
       },
-    });
+      ({percent}) => {
+        this.zippedFilesCount++;
+        const diff = Math.floor(percent) - Math.floor(lastPercent);
+        if (diff && !this.options.quiet) {
+          this.progressBar.tick(diff);
+          lastPercent = Math.floor(percent);
+        }
+      }
+    );
   }
 
   public async save(): Promise<BuildService> {
@@ -58,12 +79,12 @@ class BuildService {
     await Promise.all(this.entries.map(entry => this.checkEntry(entry)));
     const data = await this.getBuffer();
 
-    if (this.outputEntry) {
-      if (!this.outputEntry.match(/\.\w+$/)) {
-        this.outputEntry = path.join(this.outputEntry, 'data.zip');
+    if (this.outputFile) {
+      if (!this.outputFile.match(/\.\w+$/)) {
+        this.outputFile = path.join(this.outputFile, 'data.zip');
       }
 
-      await this.fileService.writeFile(data, this.outputEntry);
+      await this.fileService.writeFile(data, this.outputFile);
     } else {
       process.stdout.write(data);
     }
@@ -85,15 +106,14 @@ class BuildService {
   }
 
   private async addLink(entry: Entry): Promise<void> {
-    const {resolvedPath} = entry;
-    const fileName = path.basename(resolvedPath);
-    const fileData = await fsPromise.readLink(entry.resolvedPath);
-    const fileStat = await fsPromise.lstat(entry.resolvedPath);
+    const {resolvedPath, zipPath} = entry;
+    const fileData = await fsPromise.readLink(resolvedPath);
+    const fileStat = await fsPromise.lstat(resolvedPath);
 
-    await this.jszip.file(fileName, fileData, {
+    await this.jszip.file(zipPath, fileData, {
       date: fileStat.mtime,
       createFolders: true,
-      dosPermissions: fileStat.mode,
+      //dosPermissions: fileStat.mode,
       unixPermissions: fileStat.mode,
     });
   }
@@ -125,23 +145,23 @@ class BuildService {
   }
 
   private async checkOutput(): Promise<void> {
-    if (this.outputEntry) {
-      if (this.outputEntry.match(/\.\w+$/)) {
-        const dirExists = await this.fileService.dirExists(path.dirname(this.outputEntry));
+    if (this.outputFile) {
+      if (this.outputFile.match(/\.\w+$/)) {
+        const dirExists = await this.fileService.dirExists(path.dirname(this.outputFile));
 
         if (!dirExists) {
-          throw new Error(`Directory "${path.dirname(this.outputEntry)}" doesn't exist or is not writable.`);
+          throw new Error(`Directory "${path.dirname(this.outputFile)}" doesn't exist or is not writable.`);
         }
 
-        const fileIsWritable = await this.fileService.fileIsWritable(this.outputEntry);
+        const fileIsWritable = await this.fileService.fileIsWritable(this.outputFile);
         if (!fileIsWritable) {
-          throw new Error(`File "${this.outputEntry}" already exists.`);
+          throw new Error(`File "${this.outputFile}" already exists.`);
         }
       } else {
-        const dirExists = await this.fileService.dirExists(this.outputEntry);
+        const dirExists = await this.fileService.dirExists(this.outputFile);
 
         if (!dirExists) {
-          throw new Error(`Directory "${this.outputEntry}" doesn't exist or is not writable.`);
+          throw new Error(`Directory "${this.outputFile}" doesn't exist or is not writable.`);
         }
       }
     }

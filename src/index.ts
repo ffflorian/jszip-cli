@@ -7,6 +7,7 @@ const defaultOptions: Required<CLIOptions> = {
   ignoreEntries: [],
   compressionLevel: 5,
   outputEntry: null,
+  quiet: false,
   verbose: false,
 };
 
