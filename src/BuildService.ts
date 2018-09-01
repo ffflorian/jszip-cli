@@ -83,6 +83,7 @@ class BuildService {
         this.outputFile = path.join(this.outputFile, 'data.zip');
       }
 
+      this.logger.info(`Saving finished zip file to "${this.outputFile}" ...`);
       await this.fileService.writeFile(data, this.outputFile);
     } else {
       process.stdout.write(data);
@@ -95,6 +96,8 @@ class BuildService {
     const {resolvedPath, zipPath} = entry;
     const fileData = await this.fileService.readFile(resolvedPath);
     const fileStat = await this.fileService.fileStat(resolvedPath);
+
+    this.logger.info(`Adding file "${resolvedPath}" to ZIP file ...`);
 
     await this.jszip.file(zipPath, fileData, {
       createFolders: true,
@@ -117,11 +120,15 @@ class BuildService {
       return;
     }
 
-    this.logger.info(`Found ${entry.resolvedPath}. Adding to the ZIP file.`);
 
     if (fileStat.isDirectory()) {
+      this.logger.info(`Found directory "${entry.resolvedPath}".`);
       await this.walkDir(entry);
-    } else if (fileStat.isFile() || fileStat.isSymbolicLink()) {
+    } else if (fileStat.isFile()) {
+      this.logger.info(`Found file "${entry.resolvedPath}".`);
+      await this.addFile(entry);
+    } else if (fileStat.isSymbolicLink()) {
+      this.logger.info(`Found symbolic link "${entry.zipPath}".`);
       await this.addFile(entry);
     } else {
       this.logger.info(`Unknown file type.`, {fileStat});
