@@ -1,8 +1,7 @@
 const JSZip = require('jszip');
 const {JSZipCLI} = require('../dist');
 
-
-describe('JSZipCLI', () => {
+describe('BuildService', () => {
   let jsZipCLI;
 
   beforeEach(() => {
@@ -14,16 +13,16 @@ describe('JSZipCLI', () => {
   it('adds specified files', async () => {
     const files = ['a.js', 'b.js'];
 
-    jsZipCLI.add(files);
+    const buildService = jsZipCLI.add(files);
 
-    spyOn(jsZipCLI, 'checkOutput').and.returnValue(Promise.resolve());
-    spyOn(jsZipCLI, 'checkEntry').and.returnValue(Promise.resolve());
-    spyOn(jsZipCLI, 'writeFile').and.returnValue(Promise.resolve());
+    spyOn(buildService, 'checkOutput').and.returnValue(Promise.resolve());
+    spyOn(buildService, 'checkEntry').and.returnValue(Promise.resolve());
+    spyOn(buildService.fileService, 'writeFile').and.returnValue(Promise.resolve());
 
     await jsZipCLI.save();
 
-    expect(jsZipCLI.checkEntry).toHaveBeenCalledWith(jasmine.objectContaining({zipPath: 'a.js'}), jasmine.any(JSZip));
-    expect(jsZipCLI.checkEntry).toHaveBeenCalledWith(jasmine.objectContaining({zipPath: 'b.js'}), jasmine.any(JSZip));
-    expect(jsZipCLI.writeFile).toHaveBeenCalledTimes(1);
+    expect(buildService.checkEntry).toHaveBeenCalledWith(jasmine.objectContaining({zipPath: 'a.js'}), jasmine.any(JSZip));
+    expect(buildService.checkEntry).toHaveBeenCalledWith(jasmine.objectContaining({zipPath: 'b.js'}), jasmine.any(JSZip));
+    expect(buildService.fileService.writeFile).toHaveBeenCalledTimes(1);
   });
 });

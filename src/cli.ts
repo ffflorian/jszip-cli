@@ -31,7 +31,7 @@ program
     new JSZipCLI({
       force: options.parent.force,
       ignoreEntries: options.parent.ignore ? [options.parent.ignore] : undefined,
-      level: options.parent.level,
+      compressionLevel: options.parent.level,
       outputEntry: options.parent.output,
       verbose: options.parent.verbose,
     })
