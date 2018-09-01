@@ -22,7 +22,6 @@ class BuildService {
     });
     this.logger.state = {isEnabled: options.verbose};
     this.options = options;
-    this.jszip = new JSZip();
     this.entries = [];
     this.ignoreEntries = this.options.ignoreEntries.map(entry => new RegExp(entry.replace('*', '.*')));
     this.outputEntry = this.options.outputEntry ? path.resolve(this.options.outputEntry) : null;
@@ -56,7 +55,7 @@ class BuildService {
   public async save(): Promise<BuildService> {
     await this.checkOutput();
 
-    await Promise.all(this.entries.map(entry => this.checkEntry(entry, this.jszip)));
+    await Promise.all(this.entries.map(entry => this.checkEntry(entry)));
     const data = await this.getBuffer();
 
     if (this.outputEntry) {
@@ -68,42 +67,38 @@ class BuildService {
     } else {
       process.stdout.write(data);
     }
+
     return this;
   }
 
-  private addDir(entry: Entry): JSZip {
-    return this.jszip.folder(entry.zipPath);
-  }
-
-  private async addFile(entry: Entry, jszip: JSZip): Promise<void> {
-    const {resolvedPath} = entry;
-    const fileName = path.basename(resolvedPath);
+  private async addFile(entry: Entry): Promise<void> {
+    const {resolvedPath, zipPath} = entry;
     const fileData = await fsPromise.readFile(resolvedPath);
     const fileStat = await fsPromise.lstat(resolvedPath);
 
-    jszip.file(fileName, fileData, {
+    await this.jszip.file(zipPath, fileData, {
+      createFolders: true,
       date: fileStat.mtime,
-      createFolders: false,
-      binary: true,
-      dir: false,
-      dosPermissions: fileStat.mode,
+      //dosPermissions: fileStat.mode,
       unixPermissions: fileStat.mode,
     });
   }
 
-  private async addLink(entry: Entry, jszip: JSZip): Promise<void> {
+  private async addLink(entry: Entry): Promise<void> {
     const {resolvedPath} = entry;
     const fileName = path.basename(resolvedPath);
     const fileData = await fsPromise.readLink(entry.resolvedPath);
     const fileStat = await fsPromise.lstat(entry.resolvedPath);
 
-    jszip.file(fileName, fileData, {
+    await this.jszip.file(fileName, fileData, {
+      date: fileStat.mtime,
+      createFolders: true,
       dosPermissions: fileStat.mode,
       unixPermissions: fileStat.mode,
     });
   }
 
-  private async checkEntry(entry: Entry, jszip: JSZip): Promise<void> {
+  private async checkEntry(entry: Entry): Promise<void> {
     const fileStat = await fsPromise.lstat(entry.resolvedPath);
     const ignoreEntries = this.ignoreEntries.filter(ignoreEntry => Boolean(entry.resolvedPath.match(ignoreEntry)));
 
@@ -118,15 +113,14 @@ class BuildService {
     this.logger.info(`Found ${entry.resolvedPath}. Adding to the ZIP file.`);
 
     if (fileStat.isDirectory()) {
-      const jszip = this.addDir(entry);
-      await this.walkDir(entry, jszip);
+      await this.walkDir(entry);
     } else if (fileStat.isFile()) {
-      await this.addFile(entry, jszip);
+      await this.addFile(entry);
     } else if (fileStat.isSymbolicLink()) {
-      await this.addLink(entry, jszip);
+      await this.addLink(entry);
     } else {
-      this.logger.info(`Unknown file type.`, fileStat);
-      throw new Error(`Can't read: ${entry}`);
+      this.logger.info(`Unknown file type.`, {fileStat});
+      console.info(`Can't read: ${entry.resolvedPath}. Ignoring.`);
     }
   }
 
@@ -153,19 +147,16 @@ class BuildService {
     }
   }
 
-  private async walkDir(entry: Entry, jszip: JSZip): Promise<void> {
+  private async walkDir(entry: Entry): Promise<void> {
     this.logger.info(`Walking directory ${entry.resolvedPath} ...`);
     const files = await fsPromise.readDir(entry.resolvedPath);
     for (const file of files) {
       const newZipPath = entry.zipPath + '/' + file;
       const newResolvedPath = path.join(entry.resolvedPath, file);
-      await this.checkEntry(
-        {
-          resolvedPath: newResolvedPath,
-          zipPath: newZipPath,
-        },
-        jszip
-      );
+      await this.checkEntry({
+        resolvedPath: newResolvedPath,
+        zipPath: newZipPath,
+      });
     }
   }
 }

@@ -12,7 +12,6 @@ describe('BuildService', () => {
 
   it('adds specified files', async () => {
     const files = ['a.js', 'b.js'];
-
     const buildService = jsZipCLI.add(files);
 
     spyOn(buildService, 'checkOutput').and.returnValue(Promise.resolve());
@@ -21,14 +20,8 @@ describe('BuildService', () => {
 
     await jsZipCLI.save();
 
-    expect(buildService.checkEntry).toHaveBeenCalledWith(
-      jasmine.objectContaining({zipPath: 'a.js'}),
-      jasmine.any(JSZip)
-    );
-    expect(buildService.checkEntry).toHaveBeenCalledWith(
-      jasmine.objectContaining({zipPath: 'b.js'}),
-      jasmine.any(JSZip)
-    );
+    expect(buildService.checkEntry).toHaveBeenCalledWith(jasmine.objectContaining({zipPath: 'a.js'}));
+    expect(buildService.checkEntry).toHaveBeenCalledWith(jasmine.objectContaining({zipPath: 'b.js'}));
     expect(buildService.fileService.writeFile).toHaveBeenCalledTimes(1);
   });
 });
