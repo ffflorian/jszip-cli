@@ -28,6 +28,49 @@ class BuildService {
     this.outputEntry = this.options.outputEntry ? path.resolve(this.options.outputEntry) : null;
   }
 
+  public add(rawEntries: string[]): BuildService {
+    this.logger.info(`Adding ${rawEntries.length} entr${rawEntries.length === 1 ? 'y' : 'ies'} to ZIP file.`);
+    this.entries = rawEntries.map(rawEntry => {
+      const resolvedPath = path.resolve(rawEntry);
+      const baseName = path.basename(rawEntry);
+      return {
+        resolvedPath,
+        zipPath: baseName,
+      };
+    });
+    return this;
+  }
+
+  public getBuffer(): Promise<Buffer> {
+    const compressionType = this.options.compressionLevel === 0 ? 'STORE' : 'DEFLATE';
+
+    return this.jszip.generateAsync({
+      type: 'nodebuffer',
+      compression: compressionType,
+      compressionOptions: {
+        level: this.options.compressionLevel,
+      },
+    });
+  }
+
+  public async save(): Promise<BuildService> {
+    await this.checkOutput();
+
+    await Promise.all(this.entries.map(entry => this.checkEntry(entry, this.jszip)));
+    const data = await this.getBuffer();
+
+    if (this.outputEntry) {
+      if (!this.outputEntry.match(/\.\w+$/)) {
+        this.outputEntry = path.join(this.outputEntry, 'data.zip');
+      }
+
+      await this.fileService.writeFile(data, this.outputEntry);
+    } else {
+      process.stdout.write(data);
+    }
+    return this;
+  }
+
   private addDir(entry: Entry): JSZip {
     return this.jszip.folder(entry.zipPath);
   }
@@ -87,47 +130,6 @@ class BuildService {
     }
   }
 
-  private async walkDir(entry: Entry, jszip: JSZip): Promise<void> {
-    this.logger.info(`Walking directory ${entry.resolvedPath} ...`);
-    const files = await fsPromise.readDir(entry.resolvedPath);
-    for (const file of files) {
-      const newZipPath = entry.zipPath + '/' + file;
-      const newResolvedPath = path.join(entry.resolvedPath, file);
-      await this.checkEntry(
-        {
-          resolvedPath: newResolvedPath,
-          zipPath: newZipPath,
-        },
-        jszip
-      );
-    }
-  }
-
-  public add(rawEntries: string[]): BuildService {
-    this.logger.info(`Adding ${rawEntries.length} entr${rawEntries.length === 1 ? 'y' : 'ies'} to ZIP file.`);
-    this.entries = rawEntries.map(rawEntry => {
-      const resolvedPath = path.resolve(rawEntry);
-      const baseName = path.basename(rawEntry);
-      return {
-        resolvedPath,
-        zipPath: baseName,
-      };
-    });
-    return this;
-  }
-
-  public getBuffer(): Promise<Buffer> {
-    const compressionType = this.options.compressionLevel === 0 ? 'STORE' : 'DEFLATE';
-
-    return this.jszip.generateAsync({
-      type: 'nodebuffer',
-      compression: compressionType,
-      compressionOptions: {
-        level: this.options.compressionLevel,
-      },
-    });
-  }
-
   private async checkOutput(): Promise<void> {
     if (this.outputEntry) {
       if (this.outputEntry.match(/\.\w+$/)) {
@@ -151,22 +153,20 @@ class BuildService {
     }
   }
 
-  public async save(): Promise<BuildService> {
-    await this.checkOutput();
-
-    await Promise.all(this.entries.map(entry => this.checkEntry(entry, this.jszip)));
-    const data = await this.getBuffer();
-
-    if (this.outputEntry) {
-      if (!this.outputEntry.match(/\.\w+$/)) {
-        this.outputEntry = path.join(this.outputEntry, 'data.zip');
-      }
-
-      await this.fileService.writeFile(data, this.outputEntry);
-    } else {
-      process.stdout.write(data);
+  private async walkDir(entry: Entry, jszip: JSZip): Promise<void> {
+    this.logger.info(`Walking directory ${entry.resolvedPath} ...`);
+    const files = await fsPromise.readDir(entry.resolvedPath);
+    for (const file of files) {
+      const newZipPath = entry.zipPath + '/' + file;
+      const newResolvedPath = path.join(entry.resolvedPath, file);
+      await this.checkEntry(
+        {
+          resolvedPath: newResolvedPath,
+          zipPath: newZipPath,
+        },
+        jszip
+      );
     }
-    return this;
   }
 }
 

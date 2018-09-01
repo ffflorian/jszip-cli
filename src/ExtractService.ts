@@ -19,14 +19,6 @@ class ExtractService {
     this.logger.state = {isEnabled: this.options.verbose};
   }
 
-  private printStream(fileStream: NodeJS.ReadableStream): Promise<void> {
-    return new Promise((resolve, reject) => {
-      const stream = fileStream.pipe(process.stdout);
-      stream.on('finish', resolve);
-      stream.on('error', reject);
-    });
-  }
-
   public async extract(rawEntries: string[]): Promise<ExtractService> {
     for (const entry of rawEntries) {
       const jszip = new JSZip();
@@ -65,6 +57,14 @@ class ExtractService {
       );
     }
     return this;
+  }
+
+  private printStream(fileStream: NodeJS.ReadableStream): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const stream = fileStream.pipe(process.stdout);
+      stream.on('finish', resolve);
+      stream.on('error', reject);
+    });
   }
 }
 

@@ -27,35 +27,6 @@ class FileService {
     this.logger.state = {isEnabled: this.options.verbose};
   }
 
-  public async fileIsWritable(filePath: string): Promise<boolean> {
-    const dirExists = await this.dirExists(path.dirname(filePath));
-    if (dirExists) {
-      try {
-        await fsPromise.access(filePath, fs.constants.F_OK | fs.constants.R_OK);
-        this.logger.info(
-          `File "${filePath}" already exists.`,
-          this.options.force ? 'Forcing overwrite.' : 'Not overwriting.'
-        );
-        return this.options.force;
-      } catch (error) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  public async ensureDir(dirPath: string): Promise<FileService> {
-    try {
-      await fsPromise.access(dirPath, fs.constants.R_OK);
-      this.logger.info(`Directory ${dirPath} already exists. Not creating.`);
-    } catch (error) {
-      this.logger.info(`Directory ${dirPath} doesn't exist yet. Creating.`);
-      await fsPromise.mkdir(dirPath);
-    } finally {
-      return this;
-    }
-  }
-
   public async dirExists(dirPath: string): Promise<boolean> {
     try {
       await fsPromise.access(dirPath, fs.constants.F_OK);
@@ -74,6 +45,35 @@ class FileService {
       }
       return false;
     }
+  }
+
+  public async ensureDir(dirPath: string): Promise<FileService> {
+    try {
+      await fsPromise.access(dirPath, fs.constants.R_OK);
+      this.logger.info(`Directory ${dirPath} already exists. Not creating.`);
+    } catch (error) {
+      this.logger.info(`Directory ${dirPath} doesn't exist yet. Creating.`);
+      await fsPromise.mkdir(dirPath);
+    } finally {
+      return this;
+    }
+  }
+
+  public async fileIsWritable(filePath: string): Promise<boolean> {
+    const dirExists = await this.dirExists(path.dirname(filePath));
+    if (dirExists) {
+      try {
+        await fsPromise.access(filePath, fs.constants.F_OK | fs.constants.R_OK);
+        this.logger.info(
+          `File "${filePath}" already exists.`,
+          this.options.force ? 'Forcing overwrite.' : 'Not overwriting.'
+        );
+        return this.options.force;
+      } catch (error) {
+        return true;
+      }
+    }
+    return false;
   }
 
   public async writeFile(data: Buffer, filePath: string): Promise<FileService> {
