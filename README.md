@@ -20,7 +20,8 @@ Options:
   -i, --ignore <entry>               ignore a file or directory
   -f, --force                        force overwriting files (default: false)
   -l, --level <number>               set the compression level (default: 5)
-  -V, --verbose                      enable logging (default: false)
+  -V, --verbose                      enable verbose logging (default: false)
+  -q, --quiet                        Don't log anything (default: false)
   -h, --help                         output usage information
 
 Commands:
