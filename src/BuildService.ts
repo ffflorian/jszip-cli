@@ -95,7 +95,7 @@ class BuildService {
   private async addFile(entry: Entry, isLink = false): Promise<void> {
     const {resolvedPath, zipPath} = entry;
     const fileData = isLink
-      ? await this.fileService.readLink(resolvedPath, this.options.dereferenceLinks)
+      ? await this.fileService.readLink(resolvedPath)
       : await this.fileService.readFile(resolvedPath);
     const fileStat = await this.fileService.fileStat(resolvedPath);
 
@@ -109,6 +109,21 @@ class BuildService {
     });
 
     this.compressedFilesCount++;
+  }
+
+  private async addLink(entry: Entry): Promise<void> {
+    const {resolvedPath, zipPath} = entry;
+
+    if (this.options.dereferenceLinks) {
+      const realPath = await this.fileService.getRealPath(resolvedPath);
+      this.logger.info(`Found real path "${realPath} for symbolic link".`);
+      await this.checkEntry({
+        resolvedPath: realPath,
+        zipPath,
+      });
+    } else {
+      await this.addFile(entry, true);
+    }
   }
 
   private async checkEntry(entry: Entry): Promise<void> {
@@ -131,7 +146,7 @@ class BuildService {
       await this.addFile(entry);
     } else if (fileStat.isSymbolicLink()) {
       this.logger.info(`Found symbolic link "${entry.resolvedPath}".`);
-      await this.addFile(entry, true);
+      await this.addLink(entry);
     } else {
       this.logger.info(`Unknown file type.`, {fileStat});
       console.info(`Can't read: ${entry.resolvedPath}. Ignoring.`);

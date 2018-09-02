@@ -12,6 +12,7 @@ const fsPromise = {
   readDir: promisify(fs.readdir),
   readFile: promisify(fs.readFile),
   readLink: promisify(fs.readlink),
+  realPath: promisify(fs.realpath),
   writeFile: promisify(fs.writeFile),
 };
 
@@ -80,16 +81,16 @@ class FileService {
     return false;
   }
 
-  public async readFile(filePath: string): Promise<Buffer> {
+  public readFile(filePath: string): Promise<Buffer> {
     return fsPromise.readFile(filePath);
   }
 
-  public async readLink(linkPath: string, dereference: boolean): Promise<Buffer> {
-    if (dereference) {
-      return this.readFile(linkPath);
-    } else {
-      return fsPromise.readLink(linkPath, {encoding: 'buffer'});
-    }
+  public readLink(linkPath: string): Promise<Buffer> {
+    return fsPromise.readLink(linkPath, {encoding: 'buffer'});
+  }
+
+  public getRealPath(linkPath: string): Promise<string> {
+    return fsPromise.realPath(linkPath);
   }
 
   public async writeFile(data: Buffer, filePath: string): Promise<FileService> {
