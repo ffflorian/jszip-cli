@@ -11,7 +11,7 @@ describe('BuildService', () => {
     );
     spyOn(buildService.fileService, 'readFile').and.returnValue(Promise.resolve(Buffer.from([])));
     spyOn(buildService.fileService, 'writeFile').and.returnValue(Promise.resolve());
-  }
+  };
 
   beforeEach(() => {
     jsZipCLI = new JSZipCLI({
@@ -40,7 +40,7 @@ describe('BuildService', () => {
       outputEntry: 'file.zip',
       quiet: true,
       verbose: false,
-      ignoreEntries: ['*.map']
+      ignoreEntries: ['*.map'],
     });
     const files = ['a.js', 'b.js', 'b.js.map'];
     const buildService = jsZipCLI.add(files);

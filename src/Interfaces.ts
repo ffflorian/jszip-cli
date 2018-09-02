@@ -1,7 +1,8 @@
 interface CLIOptions {
+  compressionLevel?: number;
+  dereferenceLinks?: boolean;
   force?: boolean;
   ignoreEntries?: string[];
-  compressionLevel?: number;
   outputEntry?: string | null;
   quiet?: boolean;
   verbose?: boolean;

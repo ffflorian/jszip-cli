@@ -12,6 +12,7 @@ program
   .option('-o, --output <dir>', 'set the output directory (default: stdout)')
   .option('-i, --ignore <entry>', 'ignore a file or directory')
   .option('-f, --force', 'force overwriting files (default: false)')
+  .option('-d, --dereference', 'dereference links (default: false')
   .option('-l, --level <number>', 'set the compression level', 5)
   .option('-V, --verbose', 'enable verbose logging (default: false)')
   .option('-q, --quiet', `Don't log anything (default: false)`)
@@ -27,27 +28,28 @@ program
   .option('-o, --output <dir>', 'set the output directory (default: stdout)')
   .option('-i, --ignore <entry>', 'ignore a file or directory')
   .option('-f, --force', 'force overwriting files (default: false)')
+  .option('-d, --dereference', 'dereference links (default: false')
   .option('-l, --level <number>', 'set the compression level', 5)
   .option('-V, --verbose', 'enable verbose logging (default: false)')
   .option('-q, --quiet', `Don't log anything (default: false)`)
   .arguments('<entries...>')
   .action((entries: string[], {parent}: program.Command) => {
     new JSZipCLI({
+      ...(parent.level && {compressionLevel: parent.level}),
+      ...(parent.dereference && {dereferenceLinks: parent.dereference}),
       ...(parent.force && {force: parent.force}),
       ...(parent.ignore && {ignoreEntries: [parent.ignore]}),
-      ...(parent.level && {compressionLevel: parent.level}),
       ...(parent.output && {outputEntry: parent.output}),
       ...(parent.quiet && {quiet: parent.quiet}),
       ...(parent.verbose && {verbose: parent.verbose}),
     })
       .add(entries)
       .save()
-      .then(
-        ({outputFile, compressedFilesCount}) =>
-          parent.output &&
-          !parent.quiet &&
-          console.log(`Done compressing ${compressedFilesCount} files to "${outputFile}".`)
-      )
+      .then(({outputFile, compressedFilesCount}) => {
+        if (parent.output && !parent.quiet) {
+          console.log(`Done compressing ${compressedFilesCount} files to "${outputFile}".`);
+        }
+      })
       .catch(error => {
         console.error('Error:', error.message);
         process.exit(1);
@@ -73,10 +75,11 @@ program
       ...(parent.verbose && {verbose: parent.verbose}),
     })
       .extract(archives)
-      .then(
-        ({outputDir, extractedFilesCount}) =>
-          parent.output && !parent.quiet && console.log(`Done extracting ${extractedFilesCount} files to "${outputDir}".`)
-      )
+      .then(({outputDir, extractedFilesCount}) => {
+        if (parent.output && !parent.quiet) {
+          console.log(`Done extracting ${extractedFilesCount} files to "${outputDir}".`);
+        }
+      })
       .catch(error => {
         console.error('Error:', error.message);
         process.exit(1);

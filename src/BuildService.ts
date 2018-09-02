@@ -92,9 +92,11 @@ class BuildService {
     return this;
   }
 
-  private async addFile(entry: Entry): Promise<void> {
+  private async addFile(entry: Entry, isLink = false): Promise<void> {
     const {resolvedPath, zipPath} = entry;
-    const fileData = await this.fileService.readFile(resolvedPath);
+    const fileData = isLink
+      ? await this.fileService.readLink(resolvedPath, this.options.dereferenceLinks)
+      : await this.fileService.readFile(resolvedPath);
     const fileStat = await this.fileService.fileStat(resolvedPath);
 
     this.logger.info(`Adding file "${resolvedPath}" to ZIP file ...`);
@@ -108,6 +110,7 @@ class BuildService {
 
     this.compressedFilesCount++;
   }
+
   private async checkEntry(entry: Entry): Promise<void> {
     const fileStat = await this.fileService.fileStat(entry.resolvedPath);
     const ignoreEntries = this.ignoreEntries.filter(ignoreEntry => Boolean(entry.resolvedPath.match(ignoreEntry)));
@@ -120,7 +123,6 @@ class BuildService {
       return;
     }
 
-
     if (fileStat.isDirectory()) {
       this.logger.info(`Found directory "${entry.resolvedPath}".`);
       await this.walkDir(entry);
@@ -128,8 +130,8 @@ class BuildService {
       this.logger.info(`Found file "${entry.resolvedPath}".`);
       await this.addFile(entry);
     } else if (fileStat.isSymbolicLink()) {
-      this.logger.info(`Found symbolic link "${entry.zipPath}".`);
-      await this.addFile(entry);
+      this.logger.info(`Found symbolic link "${entry.resolvedPath}".`);
+      await this.addFile(entry, true);
     } else {
       this.logger.info(`Unknown file type.`, {fileStat});
       console.info(`Can't read: ${entry.resolvedPath}. Ignoring.`);
@@ -161,10 +163,10 @@ class BuildService {
 
   private async walkDir(entry: Entry): Promise<void> {
     this.logger.info(`Walking directory ${entry.resolvedPath} ...`);
-    const files = await fsPromise.readDir(entry.resolvedPath);
-    for (const file of files) {
-      const newZipPath = entry.zipPath + '/' + file;
-      const newResolvedPath = path.join(entry.resolvedPath, file);
+    const dirEntries = await fsPromise.readDir(entry.resolvedPath);
+    for (const dirEntry of dirEntries) {
+      const newZipPath = `${entry.zipPath}/${dirEntry}`;
+      const newResolvedPath = path.join(entry.resolvedPath, dirEntry);
       await this.checkEntry({
         resolvedPath: newResolvedPath,
         zipPath: newZipPath,

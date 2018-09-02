@@ -59,7 +59,7 @@ class FileService {
     }
   }
 
-  public async fileStat(filePath: string): Promise<fs.Stats> {
+  public fileStat(filePath: string): Promise<fs.Stats> {
     return fsPromise.lstat(filePath);
   }
 
@@ -81,11 +81,14 @@ class FileService {
   }
 
   public async readFile(filePath: string): Promise<Buffer> {
-    const fileStat = await this.fileStat(filePath);
-    if (fileStat.isSymbolicLink()) {
-      return fsPromise.readLink(filePath, {encoding: 'buffer'});
+    return fsPromise.readFile(filePath);
+  }
+
+  public async readLink(linkPath: string, dereference: boolean): Promise<Buffer> {
+    if (dereference) {
+      return this.readFile(linkPath);
     } else {
-      return fsPromise.readFile(filePath);
+      return fsPromise.readLink(linkPath, {encoding: 'buffer'});
     }
   }
 

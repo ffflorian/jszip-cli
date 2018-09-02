@@ -3,6 +3,7 @@ import {BuildService} from './BuildService';
 import {ExtractService} from './ExtractService';
 
 const defaultOptions: Required<CLIOptions> = {
+  dereferenceLinks: false,
   force: false,
   ignoreEntries: [],
   compressionLevel: 5,

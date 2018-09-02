@@ -1,6 +1,7 @@
 import * as logdown from 'logdown';
 import * as JSZip from 'jszip';
 import * as path from 'path';
+import * as os from 'os';
 import * as progress from 'progress';
 import {CLIOptions} from './Interfaces';
 import {fsPromise, FileService} from './FileService';
@@ -32,6 +33,8 @@ class ExtractService {
   }
 
   public async extract(rawEntries: string[]): Promise<ExtractService> {
+    const isWin32 = os.platform() === 'win32';
+
     for (const entry of rawEntries) {
       const jszip = new JSZip();
       if (this.outputDir) {
@@ -39,7 +42,7 @@ class ExtractService {
       }
 
       const resolvedPath = path.resolve(entry);
-      const data = await fsPromise.readFile(resolvedPath);
+      const data = await this.fileService.readFile(resolvedPath);
       const entries: [string, JSZip.JSZipObject][] = [];
 
       await jszip.loadAsync(data, {createFolders: true});
@@ -62,15 +65,20 @@ class ExtractService {
             await fsPromise.writeFile(resolvedFilePath, data, {
               encoding: 'utf-8',
             });
-            if (entry.unixPermissions) {
-              await fsPromise.chmod(resolvedFilePath, entry.unixPermissions);
-            }
+
             this.extractedFilesCount++;
+
             const diff = Math.floor(index / entries.length) - Math.floor(lastPercent);
             if (diff && !this.options.quiet) {
               this.progressBar.tick(diff);
               lastPercent = Math.floor(index / entries.length);
             }
+          }
+
+          if (isWin32) {
+            entry.dosPermissions && (await fsPromise.chmod(resolvedFilePath, entry.dosPermissions));
+          } else {
+            entry.unixPermissions && (await fsPromise.chmod(resolvedFilePath, entry.unixPermissions));
           }
         })
       );
