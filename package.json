@@ -4,7 +4,6 @@
     "jszip-cli": "dist/cli.js"
   },
   "dependencies": {
-    "@types/commander": "2.12.2",
     "@types/jszip": "3.1.4",
     "@types/node": "10.9.4",
     "@types/progress": "2.0.1",
