@@ -1,10 +1,10 @@
-import * as logdown from 'logdown';
 import * as JSZip from 'jszip';
-import * as path from 'path';
+import * as logdown from 'logdown';
 import * as os from 'os';
+import * as path from 'path';
 import * as progress from 'progress';
+import {FileService, fsPromise} from './FileService';
 import {CLIOptions} from './Interfaces';
-import {fsPromise, FileService} from './FileService';
 
 class ExtractService {
   private readonly fileService: FileService;
@@ -43,7 +43,7 @@ class ExtractService {
 
       const resolvedPath = path.resolve(entry);
       const data = await this.fileService.readFile(resolvedPath);
-      const entries: [string, JSZip.JSZipObject][] = [];
+      const entries: Array<[string, JSZip.JSZipObject]> = [];
 
       await jszip.loadAsync(data, {createFolders: true});
 

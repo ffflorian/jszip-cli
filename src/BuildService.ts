@@ -1,9 +1,9 @@
-import * as logdown from 'logdown';
 import * as JSZip from 'jszip';
+import * as logdown from 'logdown';
 import * as path from 'path';
 import * as progress from 'progress';
+import {FileService, fsPromise} from './FileService';
 import {CLIOptions, Entry} from './Interfaces';
-import {fsPromise, FileService} from './FileService';
 
 class BuildService {
   private readonly fileService: FileService;
@@ -12,7 +12,7 @@ class BuildService {
   private readonly options: Required<CLIOptions>;
   private readonly progressBar: progress;
   private entries: Entry[];
-  private ignoreEntries: RegExp[];
+  private readonly ignoreEntries: RegExp[];
   public outputFile: string | null;
   public compressedFilesCount: number;
 
@@ -56,11 +56,11 @@ class BuildService {
 
     return this.jszip.generateAsync(
       {
-        type: 'nodebuffer',
         compression: compressionType,
         compressionOptions: {
           level: this.options.compressionLevel,
         },
+        type: 'nodebuffer',
       },
       ({percent}) => {
         const diff = Math.floor(percent) - Math.floor(lastPercent);

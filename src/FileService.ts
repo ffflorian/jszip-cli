@@ -1,6 +1,6 @@
 import * as fs from 'fs';
-import * as path from 'path';
 import * as logdown from 'logdown';
+import * as path from 'path';
 import {promisify} from 'util';
 import {CLIOptions} from './Interfaces';
 

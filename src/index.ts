@@ -1,12 +1,12 @@
-import {CLIOptions} from './Interfaces';
 import {BuildService} from './BuildService';
 import {ExtractService} from './ExtractService';
+import {CLIOptions} from './Interfaces';
 
 const defaultOptions: Required<CLIOptions> = {
+  compressionLevel: 5,
   dereferenceLinks: false,
   force: false,
   ignoreEntries: [],
-  compressionLevel: 5,
   outputEntry: null,
   quiet: false,
   verbose: false,
@@ -15,7 +15,7 @@ const defaultOptions: Required<CLIOptions> = {
 export class JSZipCLI {
   private readonly buildService: BuildService;
   private readonly extractService: ExtractService;
-  private options: Required<CLIOptions>;
+  private readonly options: Required<CLIOptions>;
 
   constructor(options: CLIOptions = defaultOptions) {
     this.options = {...defaultOptions, ...options};
