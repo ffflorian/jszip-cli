@@ -48,7 +48,7 @@ class ExtractService {
       await jszip.loadAsync(data, {createFolders: true});
 
       if (!this.outputDir) {
-        this.printStream(jszip.generateNodeStream());
+        await this.printStream(jszip.generateNodeStream());
         return this;
       }
 
