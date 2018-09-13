@@ -4,10 +4,12 @@
     "jszip-cli": "dist/cli.js"
   },
   "dependencies": {
+    "@types/fs-extra": "5.0.4",
     "@types/jszip": "3.1.4",
     "@types/node": "10.9.4",
     "@types/progress": "2.0.1",
     "commander": "2.18.0",
+    "fs-extra": "7.0.0",
     "jszip": "3.1.5",
     "logdown": "3.2.7",
     "progress": "2.0.0"

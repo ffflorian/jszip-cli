@@ -1,8 +1,9 @@
+import * as fs from 'fs-extra';
 import * as JSZip from 'jszip';
 import * as logdown from 'logdown';
 import * as path from 'path';
 import * as progress from 'progress';
-import {FileService, fsPromise} from './FileService';
+import {FileService} from './FileService';
 import {CLIOptions, Entry} from './Interfaces';
 
 class BuildService {
@@ -94,10 +95,18 @@ class BuildService {
 
   private async addFile(entry: Entry, isLink = false): Promise<void> {
     const {resolvedPath, zipPath} = entry;
-    const fileData = isLink
-      ? await this.fileService.readLink(resolvedPath)
-      : await this.fileService.readFile(resolvedPath);
-    const fileStat = await this.fileService.fileStat(resolvedPath);
+    let fileStat: fs.Stats;
+    let fileData: Buffer | string;
+    try {
+      fileData = isLink ? await fs.readlink(resolvedPath) : await fs.readFile(resolvedPath);
+      fileStat = await fs.lstat(resolvedPath);
+    } catch (error) {
+      if (!this.options.quiet) {
+        console.info(`Can't read "${entry.resolvedPath}". Ignoring.`);
+      }
+      this.logger.info(error);
+      return;
+    }
 
     this.logger.info(`Adding file "${resolvedPath}" to ZIP file ...`);
 
@@ -115,7 +124,16 @@ class BuildService {
     const {resolvedPath, zipPath} = entry;
 
     if (this.options.dereferenceLinks) {
-      const realPath = await this.fileService.getRealPath(resolvedPath);
+      let realPath: string;
+      try {
+        realPath = await fs.realpath(resolvedPath);
+      } catch (error) {
+        if (!this.options.quiet) {
+          console.info(`Can't read "${entry.resolvedPath}". Ignoring.`);
+        }
+        this.logger.info(error);
+        return;
+      }
       this.logger.info(`Found real path "${realPath} for symbolic link".`);
       await this.checkEntry({
         resolvedPath: realPath,
@@ -127,7 +145,17 @@ class BuildService {
   }
 
   private async checkEntry(entry: Entry): Promise<void> {
-    const fileStat = await this.fileService.fileStat(entry.resolvedPath);
+    let fileStat: fs.Stats;
+    try {
+      fileStat = await fs.lstat(entry.resolvedPath);
+    } catch (error) {
+      if (!this.options.quiet) {
+        console.info(`Can't read "${entry.resolvedPath}". Ignoring.`);
+      }
+      this.logger.info(error);
+      return;
+    }
+
     const ignoreEntries = this.ignoreEntries.filter(ignoreEntry => Boolean(entry.resolvedPath.match(ignoreEntry)));
 
     if (ignoreEntries.length) {
@@ -149,7 +177,9 @@ class BuildService {
       await this.addLink(entry);
     } else {
       this.logger.info(`Unknown file type.`, {fileStat});
-      console.info(`Can't read: ${entry.resolvedPath}. Ignoring.`);
+      if (!this.options.quiet) {
+        console.info(`Can't read "${entry.resolvedPath}". Ignoring.`);
+      }
     }
   }
 
@@ -178,7 +208,7 @@ class BuildService {
 
   private async walkDir(entry: Entry): Promise<void> {
     this.logger.info(`Walking directory ${entry.resolvedPath} ...`);
-    const dirEntries = await fsPromise.readDir(entry.resolvedPath);
+    const dirEntries = await fs.readdir(entry.resolvedPath);
     for (const dirEntry of dirEntries) {
       const newZipPath = `${entry.zipPath}/${dirEntry}`;
       const newResolvedPath = path.join(entry.resolvedPath, dirEntry);

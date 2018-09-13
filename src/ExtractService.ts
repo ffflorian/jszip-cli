@@ -1,9 +1,10 @@
+import * as fs from 'fs-extra';
 import * as JSZip from 'jszip';
 import * as logdown from 'logdown';
 import * as os from 'os';
 import * as path from 'path';
 import * as progress from 'progress';
-import {FileService, fsPromise} from './FileService';
+import {FileService} from './FileService';
 import {CLIOptions} from './Interfaces';
 
 class ExtractService {
@@ -38,11 +39,11 @@ class ExtractService {
     for (const entry of rawEntries) {
       const jszip = new JSZip();
       if (this.outputDir) {
-        await this.fileService.ensureDir(this.outputDir);
+        await fs.ensureDir(this.outputDir);
       }
 
       const resolvedPath = path.resolve(entry);
-      const data = await this.fileService.readFile(resolvedPath);
+      const data = await fs.readFile(resolvedPath);
       const entries: Array<[string, JSZip.JSZipObject]> = [];
 
       await jszip.loadAsync(data, {createFolders: true});
@@ -62,7 +63,7 @@ class ExtractService {
             await this.fileService.ensureDir(resolvedFilePath);
           } else {
             const data = await entry.async('nodebuffer');
-            await fsPromise.writeFile(resolvedFilePath, data, {
+            await fs.writeFile(resolvedFilePath, data, {
               encoding: 'utf-8',
             });
 
@@ -76,9 +77,9 @@ class ExtractService {
           }
 
           if (isWin32) {
-            entry.dosPermissions && (await fsPromise.chmod(resolvedFilePath, entry.dosPermissions));
+            entry.dosPermissions && (await fs.chmod(resolvedFilePath, entry.dosPermissions));
           } else {
-            entry.unixPermissions && (await fsPromise.chmod(resolvedFilePath, entry.unixPermissions));
+            entry.unixPermissions && (await fs.chmod(resolvedFilePath, entry.unixPermissions));
           }
         })
       );

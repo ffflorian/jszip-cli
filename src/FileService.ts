@@ -1,20 +1,7 @@
-import * as fs from 'fs';
+import * as fs from 'fs-extra';
 import * as logdown from 'logdown';
 import * as path from 'path';
-import {promisify} from 'util';
 import {CLIOptions} from './Interfaces';
-
-const fsPromise = {
-  access: promisify(fs.access),
-  chmod: promisify(fs.writeFile),
-  lstat: promisify(fs.lstat),
-  mkdir: promisify(fs.mkdir),
-  readDir: promisify(fs.readdir),
-  readFile: promisify(fs.readFile),
-  readLink: promisify(fs.readlink),
-  realPath: promisify(fs.realpath),
-  writeFile: promisify(fs.writeFile),
-};
 
 class FileService {
   private readonly logger: logdown.Logger;
@@ -30,16 +17,16 @@ class FileService {
 
   public async dirExists(dirPath: string): Promise<boolean> {
     try {
-      await fsPromise.access(dirPath, fs.constants.F_OK);
+      await fs.access(dirPath, fs.constants.F_OK);
       try {
-        await fsPromise.access(dirPath, fs.constants.W_OK);
+        await fs.access(dirPath, fs.constants.W_OK);
         return true;
       } catch (error) {
         this.logger.info(`Directory "${dirPath}" exists but is not writable.`);
         return false;
       }
     } catch (error) {
-      this.logger.info(`Directory "${dirPath}" doesn't exist.`);
+      this.logger.info(`Directory "${dirPath}" doesn't exist.`, this.options.force ? 'Creating.' : 'Not creating.');
       if (this.options.force) {
         await this.ensureDir(dirPath);
         return true;
@@ -50,25 +37,35 @@ class FileService {
 
   public async ensureDir(dirPath: string): Promise<FileService> {
     try {
-      await fsPromise.access(dirPath, fs.constants.R_OK);
+      await fs.access(dirPath, fs.constants.R_OK);
       this.logger.info(`Directory ${dirPath} already exists. Not creating.`);
     } catch (error) {
       this.logger.info(`Directory ${dirPath} doesn't exist yet. Creating.`);
-      await fsPromise.mkdir(dirPath);
+      await fs.mkdir(dirPath);
     } finally {
       return this;
     }
   }
 
-  public fileStat(filePath: string): Promise<fs.Stats> {
-    return fsPromise.lstat(filePath);
-  }
-
-  public async fileIsWritable(filePath: string): Promise<boolean> {
+  public async fileIsReadable(filePath: string): Promise<boolean> {
     const dirExists = await this.dirExists(path.dirname(filePath));
     if (dirExists) {
       try {
-        await fsPromise.access(filePath, fs.constants.F_OK | fs.constants.R_OK);
+        await fs.access(filePath, fs.constants.F_OK | fs.constants.R_OK);
+        return true;
+      } catch (error) {
+        return false;
+      }
+    }
+    return false;
+  }
+
+  public async fileIsWritable(filePath: string): Promise<boolean> {
+    const dirName = path.dirname(filePath);
+    const dirExists = await this.dirExists(dirName);
+    if (dirExists) {
+      try {
+        await fs.access(filePath, fs.constants.F_OK | fs.constants.R_OK);
         this.logger.info(
           `File "${filePath}" already exists.`,
           this.options.force ? 'Forcing overwrite.' : 'Not overwriting.'
@@ -81,26 +78,14 @@ class FileService {
     return false;
   }
 
-  public readFile(filePath: string): Promise<Buffer> {
-    return fsPromise.readFile(filePath);
-  }
-
-  public readLink(linkPath: string): Promise<Buffer> {
-    return fsPromise.readLink(linkPath, {encoding: 'buffer'});
-  }
-
-  public getRealPath(linkPath: string): Promise<string> {
-    return fsPromise.realPath(linkPath);
-  }
-
   public async writeFile(data: Buffer, filePath: string): Promise<FileService> {
     const fileIsWritable = await this.fileIsWritable(filePath);
     if (fileIsWritable) {
-      await fsPromise.writeFile(filePath, data);
+      await fs.writeFile(filePath, data);
       return this;
     }
     throw new Error(`File "${this.options.outputEntry}" already exists.`);
   }
 }
 
-export {fsPromise, FileService};
+export {FileService};
