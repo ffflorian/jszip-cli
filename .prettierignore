@@ -1,4 +1,0 @@
-.travis.yml
-**/dist/**
-node_modules
-package.json
