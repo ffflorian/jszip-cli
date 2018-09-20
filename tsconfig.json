@@ -9,9 +9,9 @@
     "moduleResolution": "node",
     "noEmitOnError": true,
     "noImplicitReturns": true,
-    "noUnusedLocals": false,
+    "noUnusedLocals": true,
     "outDir": "dist",
-    "rootDir": ".",
+    "rootDir": "src",
     "sourceMap": true,
     "strict": true,
     "target": "es5"

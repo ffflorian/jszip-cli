@@ -15,10 +15,10 @@
   "description": "A zip CLI based on jszip.",
   "devDependencies": {
     "@types/jasmine": "2.8.8",
-    "jasmine-ts": "0.2.1",
-    "mv": "2.1.1",
+    "jasmine": "3.2.0",
     "prettier": "1.14.3",
     "rimraf": "2.6.2",
+    "ts-node": "7.0.1",
     "tslint": "5.11.0",
     "tslint-config-prettier": "1.15.0",
     "tslint-plugin-prettier": "2.0.0",
@@ -34,11 +34,10 @@
   "scripts": {
     "build": "tsc",
     "clean": "rimraf dist",
-    "dist": "yarn clean && yarn build && yarn move",
+    "dist": "yarn clean && yarn build",
     "lint": "tslint --project tsconfig.json",
-    "move": "mv dist/src/* dist/ && rimraf dist/src",
     "prettier": "prettier --write \"**/*.ts\"",
-    "test": "jasmine-ts"
+    "test": "ts-node -P tsconfig.jasmine.json node_modules/.bin/jasmine"
   },
   "types": "dist/index.d.ts",
   "version": "1.4.2"
