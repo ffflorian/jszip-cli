@@ -11,13 +11,14 @@
     "noImplicitReturns": true,
     "noUnusedLocals": false,
     "outDir": "dist",
-    "rootDir": "src",
+    "rootDir": ".",
     "sourceMap": true,
     "strict": true,
     "target": "es5"
   },
   "exclude": [
     "dist",
-    "node_modules"
+    "node_modules",
+    "spec"
   ]
 }
