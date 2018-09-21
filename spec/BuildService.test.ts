@@ -1,5 +1,6 @@
 import {JSZipCLI} from '../src';
 import {BuildService} from '../src/BuildService';
+import * as fs from 'fs-extra';
 
 describe('BuildService', () => {
   let jsZipCLI: JSZipCLI;
@@ -7,10 +8,10 @@ describe('BuildService', () => {
   const addDefaultSpies = (buildService: BuildService) => {
     spyOn<any>(buildService, 'checkOutput').and.returnValue(Promise.resolve());
     spyOn<any>(buildService, 'addFile').and.callThrough();
-    spyOn(buildService['fileService'], 'fileStat').and.returnValue(
+    spyOn(fs, 'lstat').and.returnValue(
       Promise.resolve({isDirectory: () => false, isFile: () => true})
     );
-    spyOn(buildService['fileService'], 'readFile').and.returnValue(Promise.resolve(Buffer.from([])));
+    spyOn(fs, 'readFile').and.returnValue(Promise.resolve(Buffer.from([])));
     spyOn(buildService['fileService'], 'writeFile').and.returnValue(Promise.resolve());
   };
 
