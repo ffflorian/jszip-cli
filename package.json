@@ -39,7 +39,7 @@
     "dist": "yarn clean && yarn build",
     "lint": "tslint --project tsconfig.json",
     "prettier": "prettier --ignore-path .gitignore --write \"**/*.ts\"",
-    "test": "ts-node -P tsconfig.jasmine.json node_modules/.bin/jasmine"
+    "test": "ts-node -P tsconfig.jasmine.json node_modules/jasmine/bin/jasmine"
   },
   "types": "dist/index.d.ts",
   "version": "1.4.2"
