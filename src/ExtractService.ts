@@ -5,17 +5,17 @@ import * as os from 'os';
 import * as path from 'path';
 import * as progress from 'progress';
 import {FileService} from './FileService';
-import {CLIOptions} from './Interfaces';
+import {TerminalOptions} from './Interfaces';
 
 class ExtractService {
   private readonly fileService: FileService;
   private readonly logger: logdown.Logger;
-  private readonly options: Required<CLIOptions>;
+  private readonly options: Required<TerminalOptions>;
   private readonly progressBar: progress;
   public outputDir: string | null;
   public extractedFilesCount: number;
 
-  constructor(options: Required<CLIOptions>) {
+  constructor(options: Required<TerminalOptions>) {
     this.fileService = new FileService(options);
     this.options = options;
     this.logger = logdown('jszip-cli/ExtractService', {

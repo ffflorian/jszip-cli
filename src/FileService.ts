@@ -1,12 +1,12 @@
 import * as fs from 'fs-extra';
 import * as logdown from 'logdown';
 import * as path from 'path';
-import {CLIOptions} from './Interfaces';
+import {TerminalOptions} from './Interfaces';
 
 class FileService {
   private readonly logger: logdown.Logger;
-  private readonly options: Required<CLIOptions>;
-  constructor(options: Required<CLIOptions>) {
+  private readonly options: Required<TerminalOptions>;
+  constructor(options: Required<TerminalOptions>) {
     this.options = options;
     this.logger = logdown('jszip-cli/FileService', {
       logger: console,
@@ -37,7 +37,7 @@ class FileService {
 
   public async ensureDir(dirPath: string): Promise<FileService> {
     try {
-      await fs.access(dirPath, fs.constants.R_OK);
+      await fs.access(dirPath, fs.constants.F_OK | fs.constants.R_OK);
       this.logger.info(`Directory ${dirPath} already exists. Not creating.`);
     } catch (error) {
       this.logger.info(`Directory ${dirPath} doesn't exist yet. Creating.`);
