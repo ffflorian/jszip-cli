@@ -1,15 +1,14 @@
 module.exports = {
   compressionLevel: 9,
-  dereferenceLinks: true,
   entries: [
-    'dist'
+    'dist.zip'
   ],
   force: true,
   ignoreEntries: [
     '*.map'
   ],
-  mode: 'add',
-  outputEntry: 'dist.zip',
+  mode: 'extract',
+  outputEntry: 'dist2/',
   quiet: false,
   verbose: false,
 };

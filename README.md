@@ -8,6 +8,8 @@ Run `yarn global add @ffflorian/jszip-cli` or `npm i -g @ffflorian/jszip-cli`.
 
 ## Usage
 
+### CLI
+
 ```
 Usage: jszip-cli [options] [command]
 
@@ -43,22 +45,31 @@ The structure of the configuration file is the following:
 {
   /** The compression level to use (0 = save only, 9 = best compression) (default: 5). */
   compressionLevel?: number;
+
   /** Use a configuration file (default: .jsziprc.json). */
   configFile?: string | boolean;
+
   /** Whether to dereference (follow) symlinks (default: false). */
   dereferenceLinks?: boolean;
+
   /** Which files or directories to add. */
   entries: string[];
+
   /** Force overwriting files and directories when extracting (default: false). */
   force?: boolean;
+
   /** Ignore entries (e.g. `*.js.map`). */
   ignoreEntries?: string[];
+
   /** Add or extract files. */
   mode: 'add' | 'extract';
+
   /** Set the output directory (default: stdout). */
   outputEntry?: string | null;
+
   /** Don't log anything excluding errors (default: false). */
   quiet?: boolean;
+
   /** Enable verbose logging (default: false). */
   verbose?: boolean;
 }
@@ -67,11 +78,6 @@ The structure of the configuration file is the following:
 If you would like to use a different configuration file, start the CLI with the option `--config <file>`.
 
 ## Examples
-
-### Configuration files
-
-* [JSON configuration example](./.jsziprc.example.json)
-* [JavaScript configration example](./.jsziprc.example.js)
 
 ### CLI examples
 
@@ -82,3 +88,8 @@ jszip-cli add --ignore *.map dist/ package.json > deploy.zip
 
 jszip-cli extract --output deployment_files/ deploy.zip
 ```
+
+### Configuration file examples
+
+* [JSON configuration example](./.jsziprc.example.json)
+* [JavaScript configration example](./.jsziprc.example.js)
