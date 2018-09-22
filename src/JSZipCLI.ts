@@ -82,7 +82,7 @@ export class JSZipCLI {
       this.logger.state = {isEnabled: this.options.verbose};
     } catch (error) {
       this.logger.error(error);
-      throw new Error(`Malformed configuration file "${resolvedDir}".`);
+      throw new Error(`Malformed configuration file "${resolvedDir}": ${error.message}`);
     }
   }
 
