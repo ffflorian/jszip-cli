@@ -29,6 +29,12 @@
   "files": [
     "dist"
   ],
+  "keywords": [
+    "cli",
+    "jszip",
+    "typescript",
+    "zip"
+  ],
   "license": "MIT",
   "main": "dist/index.js",
   "name": "@ffflorian/jszip-cli",

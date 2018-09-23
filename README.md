@@ -75,7 +75,7 @@ The structure of the configuration file is the following:
 }
 ```
 
-If you would like to use a different configuration file, start the CLI with the option `--config <file>`.
+If you would like to use a custom configuration file, start the CLI with the option `--config <file>`.
 
 ## Examples
 
