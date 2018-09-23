@@ -8,12 +8,12 @@ import {TerminalOptions, Entry} from './Interfaces';
 
 class BuildService {
   private readonly fileService: FileService;
+  private readonly ignoreEntries: RegExp[];
   private readonly jszip: JSZip;
   private readonly logger: logdown.Logger;
   private readonly options: Required<TerminalOptions>;
   private readonly progressBar: progress;
   private entries: Entry[];
-  private readonly ignoreEntries: RegExp[];
   public outputFile: string | null;
   public compressedFilesCount: number;
 
@@ -51,7 +51,7 @@ class BuildService {
     return this;
   }
 
-  public getBuffer(): Promise<Buffer> {
+  private getBuffer(): Promise<Buffer> {
     const compressionType = this.options.compressionLevel === 0 ? 'STORE' : 'DEFLATE';
     let lastPercent = 0;
 

@@ -4,10 +4,6 @@
     "jszip-cli": "dist/cli.js"
   },
   "dependencies": {
-    "@types/fs-extra": "5.0.4",
-    "@types/jszip": "3.1.4",
-    "@types/node": "10.10.1",
-    "@types/progress": "2.0.1",
     "commander": "2.18.0",
     "fs-extra": "7.0.0",
     "jszip": "3.1.5",
@@ -16,7 +12,11 @@
   },
   "description": "A zip CLI based on jszip.",
   "devDependencies": {
+    "@types/fs-extra": "5.0.4",
     "@types/jasmine": "2.8.8",
+    "@types/jszip": "3.1.4",
+    "@types/node": "10.10.1",
+    "@types/progress": "2.0.1",
     "jasmine": "3.2.0",
     "prettier": "1.14.3",
     "rimraf": "2.6.2",
