@@ -42,5 +42,5 @@
     "test": "ts-node -P tsconfig.jasmine.json node_modules/jasmine/bin/jasmine"
   },
   "types": "dist/index.d.ts",
-  "version": "2.0.0"
+  "version": "2.0.1"
 }
