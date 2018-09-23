@@ -21,9 +21,7 @@ export class JSZipCLI {
   private readonly extractService: ExtractService;
   private readonly logger: logdown.Logger;
   private configFile?: string;
-  private mode?: 'add' | 'extract';
   private options: Required<TerminalOptions> & Partial<ConfigFileOptions>;
-  private rawEntries?: string[];
   private terminalOptions?: TerminalOptions;
 
   constructor(options?: TerminalOptions) {
@@ -35,6 +33,7 @@ export class JSZipCLI {
 
     this.options = {...defaultOptions, ...this.terminalOptions};
     this.logger.state = {isEnabled: this.options.verbose};
+
 
     if (this.options.configFile) {
       if (typeof this.options.configFile === 'string') {
@@ -68,16 +67,8 @@ export class JSZipCLI {
     this.logger.info(`Using configuration file "${resolvedDir}".`);
 
     try {
+      delete require.cache[path.resolve(resolvedDir)];
       const configFileData: ConfigFileOptions = require(resolvedDir);
-      if (configFileData.entries) {
-        this.rawEntries = configFileData.entries;
-        delete configFileData.entries;
-      }
-      if (configFileData.mode) {
-        this.mode = configFileData.mode;
-        delete configFileData.mode;
-      }
-
       this.options = {...defaultOptions, ...configFileData, ...this.terminalOptions};
       this.logger.state = {isEnabled: this.options.verbose};
     } catch (error) {
@@ -93,8 +84,8 @@ export class JSZipCLI {
    */
   public add(rawEntries?: string[]): BuildService {
     if (!rawEntries || !rawEntries.length) {
-      if (this.rawEntries) {
-        rawEntries = this.rawEntries;
+      if (this.options.entries) {
+        rawEntries = this.options.entries;
       } else {
         throw new Error('No entries to add.');
       }
@@ -109,8 +100,8 @@ export class JSZipCLI {
    */
   public extract(rawEntries?: string[]): Promise<ExtractService> {
     if (!rawEntries || !rawEntries.length) {
-      if (this.rawEntries) {
-        rawEntries = this.rawEntries;
+      if (this.options.entries) {
+        rawEntries = this.options.entries;
       } else {
         throw new Error('No entries to extract.');
       }
@@ -126,7 +117,7 @@ export class JSZipCLI {
     if (!this.configFile) {
       throw new Error('No configuration file and no mode specified.');
     }
-    if (this.mode === 'add') {
+    if (this.options.mode === 'add') {
       return this.add()
         .save()
         .then(({outputFile, compressedFilesCount}) => {
@@ -135,7 +126,7 @@ export class JSZipCLI {
           }
           return this;
         });
-    } else if (this.mode === 'extract') {
+    } else if (this.options.mode === 'extract') {
       return this.extract().then(({outputDir, extractedFilesCount}) => {
         if (this.options.outputEntry && !this.options.quiet) {
           console.log(`Done extracting ${extractedFilesCount} files to "${outputDir}".`);

@@ -8,9 +8,7 @@ describe('BuildService', () => {
   const addDefaultSpies = (buildService: BuildService) => {
     spyOn<any>(buildService, 'checkOutput').and.returnValue(Promise.resolve());
     spyOn<any>(buildService, 'addFile').and.callThrough();
-    spyOn(fs, 'lstat').and.returnValue(
-      Promise.resolve({isDirectory: () => false, isFile: () => true})
-    );
+    spyOn(fs, 'lstat').and.returnValue(Promise.resolve({isDirectory: () => false, isFile: () => true}));
     spyOn(fs, 'readFile').and.returnValue(Promise.resolve(Buffer.from([])));
     spyOn(buildService['fileService'], 'writeFile').and.returnValue(Promise.resolve());
   };

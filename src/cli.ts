@@ -130,4 +130,3 @@ if (!program.args.length) {
     process.exit(1);
   }
 }
-
