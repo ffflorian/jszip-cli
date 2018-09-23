@@ -36,7 +36,7 @@ Commands:
 ```
 
 ### Configuration file
-To use a configuration file, add a file `.jsziprc.json` to your project and the JSZip CLI will find it automatically.
+To use a configuration file, add a configuration file following the [cosmiconfig standard](https://github.com/davidtheclark/cosmiconfig#cosmiconfig) (e.g. `.jsziprc.json`) to your project and the JSZip CLI will find it automatically.
 Options from the CLI still take precedence over the configuration file.
 
 The structure of the configuration file is the following:

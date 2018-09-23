@@ -5,6 +5,7 @@
   },
   "dependencies": {
     "commander": "2.18.0",
+    "cosmiconfig": "5.0.6",
     "fs-extra": "7.0.0",
     "jszip": "3.1.5",
     "logdown": "3.2.7",
@@ -12,6 +13,7 @@
   },
   "description": "A zip CLI based on jszip.",
   "devDependencies": {
+    "@types/cosmiconfig": "5.0.3",
     "@types/fs-extra": "5.0.4",
     "@types/jasmine": "2.8.8",
     "@types/jszip": "3.1.4",
