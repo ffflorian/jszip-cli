@@ -91,5 +91,5 @@ jszip-cli extract --output deployment_files/ deploy.zip
 
 ### Configuration file examples
 
-* [JSON configuration example](./.jsziprc.example.json)
-* [JavaScript configration example](./.jsziprc.example.js)
+* [JSON configuration example](./config-examples/.jsziprc.example.json)
+* [JavaScript configration example](./config-examples/.jsziprc.example.js)
