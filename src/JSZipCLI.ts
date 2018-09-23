@@ -1,6 +1,6 @@
 import {BuildService} from './BuildService';
 import {ExtractService} from './ExtractService';
-import {ConfigFileOptions, TerminalOptions} from './Interfaces';
+import {ConfigFileOptions, TerminalOptions} from './interfaces';
 import * as fs from 'fs-extra';
 import * as logdown from 'logdown';
 import * as path from 'path';

@@ -1,7 +1,7 @@
 import * as fs from 'fs-extra';
 import * as logdown from 'logdown';
 import * as path from 'path';
-import {TerminalOptions} from './Interfaces';
+import {TerminalOptions} from './interfaces';
 
 class FileService {
   private readonly logger: logdown.Logger;

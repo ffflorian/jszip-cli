@@ -5,7 +5,7 @@ import * as os from 'os';
 import * as path from 'path';
 import * as progress from 'progress';
 import {FileService} from './FileService';
-import {TerminalOptions} from './Interfaces';
+import {TerminalOptions} from './interfaces';
 
 class ExtractService {
   private readonly fileService: FileService;
