@@ -16,7 +16,7 @@ program
   .option('-d, --dereference', 'dereference (follow) links (default: false)')
   .option('-l, --level <number>', 'set the compression level', 5)
   .option('-V, --verbose', 'enable verbose logging (default: false)')
-  .option('-q, --quiet', `Don't log anything (default: false)`)
+  .option('-q, --quiet', `don't log anything (default: false)`)
   .version(version, '-v, --version')
   .on('command:*', args => {
     console.error(`\n  error: invalid command \`${args[0]}'\n`);
@@ -35,7 +35,7 @@ program
   .option('-d, --dereference', 'dereference (follow) symlinks (default: false)')
   .option('-l, --level <number>', 'set the compression level', 5)
   .option('-V, --verbose', 'enable verbose logging (default: false)')
-  .option('-q, --quiet', `Don't log anything excluding errors (default: false)`)
+  .option('-q, --quiet', `don't log anything excluding errors (default: false)`)
   .arguments('[entries...]')
   .action((entries: string[], {parent}: program.Command) => {
     try {
@@ -76,7 +76,7 @@ program
   .option('-i, --ignore <entry>', 'ignore a file or directory')
   .option('-f, --force', 'force overwriting files and directories (default: false)')
   .option('-V, --verbose', 'enable verbose logging (default: false)')
-  .option('-q, --quiet', `Don't log anything excluding errors (default: false)`)
+  .option('-q, --quiet', `don't log anything excluding errors (default: false)`)
   .arguments('<archives...>')
   .action((archives: string[], {parent}: program.Command) => {
     try {

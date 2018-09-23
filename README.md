@@ -25,7 +25,7 @@ Options:
   -d, --dereference                  dereference (follow) links (default: false)
   -l, --level <number>               set the compression level (default: 5)
   -V, --verbose                      enable verbose logging (default: false)
-  -q, --quiet                        Don't log anything (default: false)
+  -q, --quiet                        don't log anything (default: false)
   -v, --version                      output the version number
   -h, --help                         output usage information
 
