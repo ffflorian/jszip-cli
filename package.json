@@ -17,7 +17,7 @@
     "@types/fs-extra": "5.0.4",
     "@types/jasmine": "2.8.8",
     "@types/jszip": "3.1.4",
-    "@types/node": "10.10.3",
+    "@types/node": "10.11.0",
     "@types/progress": "2.0.1",
     "jasmine": "3.2.0",
     "prettier": "1.14.3",
