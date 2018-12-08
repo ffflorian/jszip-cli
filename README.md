@@ -36,8 +36,8 @@ Commands:
 ```
 
 ### Configuration file
-To use a configuration file, add a configuration file following the [cosmiconfig standard](https://github.com/davidtheclark/cosmiconfig#cosmiconfig) (e.g. `.jsziprc.json`) to your project and the JSZip CLI will find it automatically.
-Options from the CLI still take precedence over the configuration file.
+
+To use a configuration file, add a configuration file following the [cosmiconfig standard](https://github.com/davidtheclark/cosmiconfig#cosmiconfig) (e.g. `.jsziprc.json`) to your project and the JSZip CLI will find it automatically. Options from the CLI still take precedence over the configuration file.
 
 The structure of the configuration file is the following:
 
@@ -91,5 +91,5 @@ jszip-cli extract --output deployment_files/ deploy.zip
 
 ### Configuration file examples
 
-* [JSON configuration example](./config-examples/.jsziprc.example.json)
-* [JavaScript configration example](./config-examples/.jsziprc.example.js)
+- [JSON configuration example](./config-examples/.jsziprc.example.json)
+- [JavaScript configuration example](./config-examples/.jsziprc.example.js)
