@@ -1,8 +1,8 @@
-import * as logdown from 'logdown';
-import { BuildService } from './BuildService';
-import { ExtractService } from './ExtractService';
-import { ConfigFileOptions, TerminalOptions } from './interfaces';
 import cosmiconfig = require('cosmiconfig');
+import * as logdown from 'logdown';
+import {BuildService} from './BuildService';
+import {ExtractService} from './ExtractService';
+import {ConfigFileOptions, TerminalOptions} from './interfaces';
 
 const defaultOptions: Required<TerminalOptions> = {
   compressionLevel: 5,
@@ -20,9 +20,9 @@ export class JSZipCLI {
   private readonly extractService: ExtractService;
   private readonly logger: logdown.Logger;
   private readonly configExplorer: cosmiconfig.Explorer;
-  private configFile?: string;
+  private readonly configFile?: string;
   private options: Required<TerminalOptions> & Partial<ConfigFileOptions>;
-  private terminalOptions?: TerminalOptions;
+  private readonly terminalOptions?: TerminalOptions;
 
   constructor(options?: TerminalOptions) {
     this.terminalOptions = options;
@@ -32,8 +32,8 @@ export class JSZipCLI {
     });
     this.configExplorer = cosmiconfig('jszip');
 
-    this.options = { ...defaultOptions, ...this.terminalOptions };
-    this.logger.state = { isEnabled: this.options.verbose };
+    this.options = {...defaultOptions, ...this.terminalOptions};
+    this.logger.state = {isEnabled: this.options.verbose};
 
     this.checkConfigFile();
 
@@ -55,7 +55,7 @@ export class JSZipCLI {
       try {
         configResult = this.configExplorer.loadSync(this.options.configFile);
       } catch (error) {
-        throw new Error(`Can't read configuration file: ${error.message}`)
+        throw new Error(`Can't read configuration file: ${error.message}`);
       }
     } else if (this.options.configFile === true) {
       try {
@@ -72,10 +72,10 @@ export class JSZipCLI {
 
     const configFileData = configResult.config as ConfigFileOptions;
 
-    this.logger.info(`Using configuration file ${configResult.filepath}`)
+    this.logger.info(`Using configuration file ${configResult.filepath}`);
 
-    this.options = { ...defaultOptions, ...configFileData, ...this.terminalOptions };
-    this.logger.state = { isEnabled: this.options.verbose };
+    this.options = {...defaultOptions, ...configFileData, ...this.terminalOptions};
+    this.logger.state = {isEnabled: this.options.verbose};
   }
 
   /**
@@ -121,14 +121,14 @@ export class JSZipCLI {
     if (this.options.mode === 'add') {
       return this.add()
         .save()
-        .then(({ outputFile, compressedFilesCount }) => {
+        .then(({outputFile, compressedFilesCount}) => {
           if (this.options.outputEntry && !this.options.quiet) {
             console.log(`Done compressing ${compressedFilesCount} files to "${outputFile}".`);
           }
           return this;
         });
     } else if (this.options.mode === 'extract') {
-      return this.extract().then(({ outputDir, extractedFilesCount }) => {
+      return this.extract().then(({outputDir, extractedFilesCount}) => {
         if (this.options.outputEntry && !this.options.quiet) {
           console.log(`Done extracting ${extractedFilesCount} files to "${outputDir}".`);
         }

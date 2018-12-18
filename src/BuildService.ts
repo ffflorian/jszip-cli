@@ -4,7 +4,7 @@ import * as logdown from 'logdown';
 import * as path from 'path';
 import * as progress from 'progress';
 import {FileService} from './FileService';
-import {TerminalOptions, Entry} from './interfaces';
+import {Entry, TerminalOptions} from './interfaces';
 
 class BuildService {
   private readonly fileService: FileService;
