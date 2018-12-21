@@ -114,26 +114,26 @@ export class JSZipCLI {
    * Run in file mode - reads entries and settings from configuration file.
    * Options from the constructor still take precedence.
    */
-  public fileMode(): Promise<JSZipCLI> {
+  public async fileMode(): Promise<JSZipCLI> {
     if (!this.options.mode && !this.configFile) {
       throw new Error('No configuration file and no mode specified.');
     }
     if (this.options.mode === 'add') {
-      return this.add()
-        .save()
-        .then(({outputFile, compressedFilesCount}) => {
-          if (this.options.outputEntry && !this.options.quiet) {
-            console.log(`Done compressing ${compressedFilesCount} files to "${outputFile}".`);
-          }
-          return this;
-        });
+      const {outputFile, compressedFilesCount} = await this.add().save();
+
+      if (this.options.outputEntry && !this.options.quiet) {
+        console.log(`Done compressing ${compressedFilesCount} files to "${outputFile}".`);
+      }
+
+      return this;
     } else if (this.options.mode === 'extract') {
-      return this.extract().then(({outputDir, extractedFilesCount}) => {
-        if (this.options.outputEntry && !this.options.quiet) {
-          console.log(`Done extracting ${extractedFilesCount} files to "${outputDir}".`);
-        }
-        return this;
-      });
+      const {outputDir, extractedFilesCount} = await this.extract();
+
+      if (this.options.outputEntry && !this.options.quiet) {
+        console.log(`Done extracting ${extractedFilesCount} files to "${outputDir}".`);
+      }
+
+      return this;
     } else {
       throw new Error('No or invalid mode in configuration file defined.');
     }
