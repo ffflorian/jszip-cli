@@ -15,7 +15,7 @@
   "devDependencies": {
     "@types/cosmiconfig": "5.0.3",
     "@types/fs-extra": "5.0.4",
-    "@types/jasmine": "3.3.7",
+    "@types/jasmine": "3.3.8",
     "@types/jszip": "3.1.4",
     "@types/node": "10.12.7",
     "@types/progress": "2.0.3",
