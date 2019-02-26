@@ -28,22 +28,10 @@ class FileService {
     } catch (error) {
       this.logger.info(`Directory "${dirPath}" doesn't exist.`, this.options.force ? 'Creating.' : 'Not creating.');
       if (this.options.force) {
-        await this.ensureDir(dirPath);
+        await fs.ensureDir(dirPath);
         return true;
       }
       return false;
-    }
-  }
-
-  public async ensureDir(dirPath: string): Promise<FileService> {
-    try {
-      await fs.access(dirPath, fs.constants.F_OK | fs.constants.R_OK);
-      this.logger.info(`Directory ${dirPath} already exists. Not creating.`);
-    } catch (error) {
-      this.logger.info(`Directory ${dirPath} doesn't exist yet. Creating.`);
-      await fs.mkdir(dirPath);
-    } finally {
-      return this;
     }
   }
 
