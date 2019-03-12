@@ -4,11 +4,9 @@ import * as logdown from 'logdown';
 import * as os from 'os';
 import * as path from 'path';
 import * as progress from 'progress';
-import {FileService} from './FileService';
 import {TerminalOptions} from './interfaces';
 
 class ExtractService {
-  private readonly fileService: FileService;
   private readonly logger: logdown.Logger;
   private readonly options: Required<TerminalOptions>;
   private readonly progressBar: progress;
@@ -16,7 +14,6 @@ class ExtractService {
   public extractedFilesCount: number;
 
   constructor(options: Required<TerminalOptions>) {
-    this.fileService = new FileService(options);
     this.options = options;
     this.logger = logdown('jszip-cli/ExtractService', {
       logger: console,
@@ -60,7 +57,7 @@ class ExtractService {
         entries.map(async ([filePath, entry], index) => {
           const resolvedFilePath = path.join(this.outputDir!, filePath);
           if (entry.dir) {
-            await this.fileService.ensureDir(resolvedFilePath);
+            await fs.ensureDir(resolvedFilePath);
           } else {
             const data = await entry.async('nodebuffer');
             await fs.writeFile(resolvedFilePath, data, {
