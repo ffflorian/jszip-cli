@@ -1,6 +1,6 @@
+import * as fs from 'fs-extra';
 import {JSZipCLI} from '../src';
 import {BuildService} from '../src/BuildService';
-import * as fs from 'fs-extra';
 
 describe('BuildService', () => {
   let jsZipCLI: JSZipCLI;
@@ -8,9 +8,9 @@ describe('BuildService', () => {
   const addDefaultSpies = (buildService: BuildService) => {
     spyOn<any>(buildService, 'checkOutput').and.returnValue(Promise.resolve());
     spyOn<any>(buildService, 'addFile').and.callThrough();
-    spyOn(fs, 'lstat').and.returnValue(Promise.resolve({isDirectory: () => false, isFile: () => true}));
+    spyOn<any>(fs, 'lstat').and.returnValue(Promise.resolve({isDirectory: () => false, isFile: () => true}));
     spyOn(fs, 'readFile').and.returnValue(Promise.resolve(Buffer.from([])));
-    spyOn(buildService['fileService'], 'writeFile').and.returnValue(Promise.resolve());
+    spyOn<any>(buildService['fileService'], 'writeFile').and.returnValue(Promise.resolve());
   };
 
   beforeEach(() => {
@@ -37,10 +37,10 @@ describe('BuildService', () => {
 
   it('ignores specified files', async () => {
     jsZipCLI = new JSZipCLI({
+      ignoreEntries: ['*.map'],
       outputEntry: 'file.zip',
       quiet: true,
       verbose: false,
-      ignoreEntries: ['*.map'],
     });
     const files = ['a.js', 'b.js', 'b.js.map'];
     const buildService = jsZipCLI.add(files);

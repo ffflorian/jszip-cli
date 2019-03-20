@@ -44,8 +44,12 @@
   ],
   "license": "MIT",
   "lint-staged": {
-    "*.ts": [
+    "src/**/*.ts": [
       "tslint --config tslint.json --project tsconfig.json --fix",
+      "git add"
+    ],
+    "spec/**/*.ts": [
+      "tslint --config tslint.json --project tsconfig.jasmine.json --fix",
       "git add"
     ],
     "*.{json,md,css}": [
