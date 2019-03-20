@@ -1,6 +1,6 @@
-import {ConfigFileOptions, JSZipCLI, TerminalOptions} from '../src';
 import * as fs from 'fs-extra';
 import * as path from 'path';
+import {ConfigFileOptions, JSZipCLI, TerminalOptions} from '../src';
 
 const tempDir = path.resolve(__dirname, '.temp');
 const configFilePath = path.resolve(tempDir, 'config.json');
@@ -61,7 +61,7 @@ describe('JSZipCLI', () => {
     const jsZipCLI = new JSZipCLI({configFile: configFilePath});
 
     spyOn(jsZipCLI, 'add').and.callThrough();
-    spyOn(jsZipCLI, 'extract').and.returnValue(Promise.resolve({outputFile: '', compressedFilesCount: 1}));
+    spyOn<any>(jsZipCLI, 'extract').and.returnValue(Promise.resolve({outputFile: '', compressedFilesCount: 1}));
 
     await jsZipCLI.fileMode();
 
