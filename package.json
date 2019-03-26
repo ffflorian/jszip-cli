@@ -8,7 +8,7 @@
     "cosmiconfig": "5.2.0",
     "fs-extra": "7.0.1",
     "jszip": "3.2.1",
-    "logdown": "3.2.7",
+    "logdown": "3.2.8",
     "progress": "2.0.3"
   },
   "description": "A zip CLI based on jszip.",
