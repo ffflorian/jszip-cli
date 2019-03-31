@@ -1,24 +1,22 @@
 {
   "compilerOptions": {
+    "alwaysStrict": true,
     "declaration": true,
-    "lib": [
-      "dom",
-      "es2018"
-    ],
+    "forceConsistentCasingInFileNames": true,
+    "lib": ["dom", "esnext"],
     "module": "commonjs",
     "moduleResolution": "node",
     "noEmitOnError": true,
+    "noImplicitAny": true,
     "noImplicitReturns": true,
+    "noImplicitThis": true,
     "noUnusedLocals": true,
     "outDir": "dist",
     "rootDir": "src",
     "sourceMap": true,
     "strict": true,
+    "strictFunctionTypes": true,
     "target": "es5"
   },
-  "exclude": [
-    "dist",
-    "node_modules",
-    "spec"
-  ]
+  "exclude": ["dist", "node_modules", "spec"]
 }

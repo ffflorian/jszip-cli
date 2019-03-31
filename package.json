@@ -31,7 +31,7 @@
     "tslint": "5.14.0",
     "tslint-config-prettier": "1.18.0",
     "tslint-plugin-prettier": "2.0.1",
-    "typescript": "3.3.4000"
+    "typescript": "3.4.1"
   },
   "files": [
     "dist"
@@ -45,14 +45,14 @@
   "license": "MIT",
   "lint-staged": {
     "src/**/*.ts": [
-      "tslint --config tslint.json --project tsconfig.json --fix",
+      "tslint --project tsconfig.json --fix",
       "git add"
     ],
     "spec/**/*.ts": [
-      "tslint --config tslint.json --project tsconfig.jasmine.json --fix",
+      "tslint --project tsconfig.jasmine.json --fix",
       "git add"
     ],
-    "*.{json,md,css}": [
+    "*.{json,md}": [
       "prettier --write",
       "git add"
     ]
@@ -64,12 +64,16 @@
     "build": "tsc",
     "clean": "rimraf dist",
     "dist": "yarn clean && yarn build",
-    "lint": "yarn lint:ts && yarn lint:other",
+    "fix": "yarn fix:other && yarn fix:ts",
+    "fix:other": "yarn prettier --write",
+    "fix:ts": "yarn lint:ts --fix && yarn lint:ts:spec --fix",
+    "lint": "yarn lint:ts && yarn lint:ts:spec && yarn lint:other",
     "lint:other": "yarn prettier --list-different",
-    "lint:ts": "tslint --config tslint.json --project tsconfig.json \"**/*.ts\"",
-    "prettier": "prettier --ignore-path .gitignore --write \"**/*.ts\"",
+    "lint:ts": "tslint --project tsconfig.json",
+    "lint:ts:spec": "tslint --project tsconfig.jasmine.json",
+    "prettier": "prettier \"*.{json,md}\"",
     "release": "semantic-release",
-    "test": "ts-node -P tsconfig.jasmine.json node_modules/jasmine/bin/jasmine"
+    "test": "ts-node -P tsconfig.jasmine.json node_modules/.bin/jasmine"
   },
   "version": "2.1.4"
 }
