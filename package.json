@@ -6,7 +6,7 @@
   "dependencies": {
     "commander": "2.20.0",
     "cosmiconfig": "5.2.0",
-    "fs-extra": "8.0.0",
+    "fs-extra": "8.0.1",
     "jszip": "3.2.1",
     "logdown": "3.2.8",
     "progress": "2.0.3"
