@@ -9,31 +9,31 @@ workflow "Build, lint and test" {
 }
 
 action "Don't skip CI" {
-  uses = "ffflorian/actions/skip-ci-check@master"
+  uses = "ffflorian/actions/skip-ci-check@v1.0.0"
 }
 
 action "Install dependencies" {
-  uses = "ffflorian/actions/git-node@master"
+  uses = "ffflorian/actions/git-node@v1.0.0"
   needs = "Don't skip CI"
   runs = "yarn"
 }
 
 action "Lint project" {
-  uses = "ffflorian/actions/git-node@master"
+  uses = "ffflorian/actions/git-node@v1.0.0"
   needs = "Install dependencies"
   runs = "yarn"
   args = "lint"
 }
 
 action "Build project" {
-  uses = "ffflorian/actions/git-node@master"
+  uses = "ffflorian/actions/git-node@v1.0.0"
   needs = "Install dependencies"
   runs = "yarn"
   args = "dist"
 }
 
 action "Test project" {
-  uses = "ffflorian/actions/git-node@master"
+  uses = "ffflorian/actions/git-node@v1.0.0"
   needs = "Install dependencies"
   runs = "yarn"
   args = "test"
@@ -50,13 +50,13 @@ action "Check for master branch" {
 }
 
 action "Don't publish dependency updates" {
-  uses = "ffflorian/actions/last_commit@master"
+  uses = "ffflorian/actions/last_commit@v1.0.0"
   needs = "Check for master branch"
   args = "^(?!chore\\(deps)"
 }
 
 action "Publish project" {
-  uses = "ffflorian/actions/git-node@master"
+  uses = "ffflorian/actions/git-node@v1.0.0"
   needs = "Don't publish dependency updates"
   env = {
     GIT_AUTHOR_NAME = "ffflobot"
