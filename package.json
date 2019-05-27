@@ -78,5 +78,5 @@
     "release": "semantic-release",
     "test": "ts-node -P tsconfig.jasmine.json node_modules/.bin/jasmine"
   },
-  "version": "2.1.4"
+  "version": "2.2.0"
 }
