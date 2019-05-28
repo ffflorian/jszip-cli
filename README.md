@@ -1,4 +1,4 @@
-# jszip-cli [![npm version](https://img.shields.io/npm/v/@ffflorian/jszip-cli.svg?style=flat)](https://www.npmjs.com/package/@ffflorian/jszip-cli) [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=ffflorian/jszip-cli)](https://dependabot.com)
+# jszip-cli [![Build Status](https://action-badges.now.sh/ffflorian/jszip-cli)](https://github.com/ffflorian/jszip-cli/actions/) [![npm version](https://img.shields.io/npm/v/@ffflorian/jszip-cli.svg?style=flat)](https://www.npmjs.com/package/@ffflorian/jszip-cli) [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=ffflorian/jszip-cli)](https://dependabot.com)
 
 A zip CLI based on [jszip](https://www.npmjs.com/package/jszip).
 
