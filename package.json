@@ -78,6 +78,7 @@
     "lint:ts:spec": "tslint --project tsconfig.jasmine.json",
     "prettier": "prettier \"*.{json,md}\"",
     "release": "semantic-release",
+    "start": "ts-node src/cli.ts",
     "test": "ts-node -P tsconfig.jasmine.json node_modules/.bin/jasmine"
   },
   "version": "2.2.0"

@@ -1,9 +1,19 @@
 #!/usr/bin/env node
 
 import * as program from 'commander';
+import * as fs from 'fs-extra';
+import * as path from 'path';
+
 import {JSZipCLI} from './JSZipCLI';
 
-const {name, version, description}: {name: string; version: string; description: string} = require('../package.json');
+const defaultPackageJsonPath = path.join(__dirname, 'package.json');
+const packageJsonPath = fs.existsSync(defaultPackageJsonPath)
+  ? defaultPackageJsonPath
+  : path.join(__dirname, '../package.json');
+
+const {description, name, version}: {description: string; name: string; version: string} = fs.readJSONSync(
+  packageJsonPath
+);
 
 program
   .name(name.replace(/^@[^/]+\//, ''))
