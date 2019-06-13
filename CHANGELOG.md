@@ -1,3 +1,9 @@
+## [2.3.1](https://github.com/ffflorian/jszip-cli/compare/v2.3.0...v2.3.1) (2019-06-13)
+
+### Bug Fixes
+
+- package.json path in CLI ([ad5eea9](https://github.com/ffflorian/jszip-cli/commit/ad5eea9))
+
 # [2.3.0](https://github.com/ffflorian/jszip-cli/compare/v2.2.0...v2.3.0) (2019-06-12)
 
 ### Features
