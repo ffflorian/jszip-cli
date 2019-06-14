@@ -49,15 +49,9 @@ action "Check for master branch" {
   args = "branch master"
 }
 
-action "Don't publish dependency updates" {
-  uses = "ffflorian/actions/last_commit@v1.0.0"
-  needs = "Check for master branch"
-  args = "^(?!chore\\(deps)"
-}
-
 action "Flatten project" {
   uses = "ffflorian/actions/git-node@v1.0.0"
-  needs = "Don't publish dependency updates"
+  needs = "Check for master branch"
   runs = "yarn"
   args = "flatten"
 }

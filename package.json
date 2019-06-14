@@ -14,9 +14,11 @@
   "description": "A zip CLI based on jszip.",
   "devDependencies": {
     "@ffflorian/prettier-config": "0.0.5",
+    "@ffflorian/semantic-release-config": "0.1.1",
     "@ffflorian/tslint-config": "0.2.2",
     "@semantic-release/changelog": "3.0.4",
     "@semantic-release/git": "7.0.12",
+    "@semantic-release/npm": "5.1.9",
     "@types/cosmiconfig": "5.0.3",
     "@types/fs-extra": "7.0.0",
     "@types/jasmine": "3.3.13",
@@ -63,6 +65,9 @@
   "main": "dist/index.js",
   "name": "@ffflorian/jszip-cli",
   "prettier": "@ffflorian/prettier-config",
+  "release": {
+    "extends": "@ffflorian/semantic-release-config"
+  },
   "repository": "https://github.com/ffflorian/jszip-cli.git",
   "scripts": {
     "build": "tsc",
