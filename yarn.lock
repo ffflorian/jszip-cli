@@ -25,10 +25,10 @@
   dependencies:
     regenerator-runtime "^0.13.2"
 
-"@expo/spawn-async@1.4.2":
-  version "1.4.2"
-  resolved "https://registry.npmjs.org/@expo/spawn-async/-/spawn-async-1.4.2.tgz#334b28215e3850071cede3a23d898f977904e01a"
-  integrity sha512-afevfRz0S/R63MfAVQstrowC/M5cwWdIKkim4wqFSYmnvOejq8B8RAeWZ0lKimPmP2QfuvA/FG2L0SzonrHTKQ==
+"@expo/spawn-async@1.5.0":
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/@expo/spawn-async/-/spawn-async-1.5.0.tgz#799827edd8c10ef07eb1a2ff9dcfe081d596a395"
+  integrity sha512-LB7jWkqrHo+5fJHNrLAFdimuSXQ2MQ4lA7SQW5bf/HbsXuV2VrT/jN/M8f/KoWt0uJMGN4k/j7Opx4AvOOxSew==
   dependencies:
     cross-spawn "^6.0.5"
 
@@ -4441,12 +4441,12 @@ psl@^1.1.24:
   resolved "https://registry.yarnpkg.com/psl/-/psl-1.1.31.tgz#e9aa86d0101b5b105cbe93ac6b784cd547276184"
   integrity sha512-/6pt4+C+T+wZUieKR620OpzN/LlnNKuWjy1iFLQ/UG35JqHlR/89MP1d96dUfkf6Dne3TuLQzOYEYshJ+Hx8mw==
 
-publish-flat@1.1.2:
-  version "1.1.2"
-  resolved "https://registry.npmjs.org/publish-flat/-/publish-flat-1.1.2.tgz#489bbbb3cc45b21c7e3cea1530e974c686051e52"
-  integrity sha512-UX7bDs5ygMU9eEHUqFo3bkIsQKydp5Bhp66BndtRFcI7iKar+FIZQ7gzAkw+I+3wOqy31SZ2Jy3NSl9YDVN8cw==
+publish-flat@1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/publish-flat/-/publish-flat-1.2.0.tgz#81e520bd07cee32ed5519dc6e27b2781f6f3fcdd"
+  integrity sha512-WhPcElKSzdjtJb59HgIPySoVstb0rwJQPRtGyX6sOmupT45PD5/bpa1W6mH0MEsHvp1pdMYLc77WqZ9UGiAtjw==
   dependencies:
-    "@expo/spawn-async" "1.4.2"
+    "@expo/spawn-async" "1.5.0"
     commander "2.20.0"
     commander-remaining-args "1.2.0"
     fs-extra "8.0.1"
