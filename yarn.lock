@@ -4441,10 +4441,10 @@ psl@^1.1.24:
   resolved "https://registry.yarnpkg.com/psl/-/psl-1.1.31.tgz#e9aa86d0101b5b105cbe93ac6b784cd547276184"
   integrity sha512-/6pt4+C+T+wZUieKR620OpzN/LlnNKuWjy1iFLQ/UG35JqHlR/89MP1d96dUfkf6Dne3TuLQzOYEYshJ+Hx8mw==
 
-publish-flat@1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/publish-flat/-/publish-flat-1.2.0.tgz#81e520bd07cee32ed5519dc6e27b2781f6f3fcdd"
-  integrity sha512-WhPcElKSzdjtJb59HgIPySoVstb0rwJQPRtGyX6sOmupT45PD5/bpa1W6mH0MEsHvp1pdMYLc77WqZ9UGiAtjw==
+publish-flat@1.2.4:
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/publish-flat/-/publish-flat-1.2.4.tgz#a0d5919edea17dbe6f1895df844a5dcd7346c67b"
+  integrity sha512-NSEtJZZwI7btoFsYTsDu3JkJ/DgYnJWN2yxQnBCnPjiIgnuFiXxp1gAzJYBahaTEkDkT15fXSjSglSsuNwL1og==
   dependencies:
     "@expo/spawn-async" "1.5.0"
     commander "2.20.0"
