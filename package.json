@@ -17,7 +17,7 @@
     "@ffflorian/semantic-release-config": "0.1.2",
     "@ffflorian/tslint-config": "0.3.1",
     "@semantic-release/changelog": "3.0.4",
-    "@semantic-release/git": "7.0.14",
+    "@semantic-release/git": "7.0.15",
     "@semantic-release/npm": "5.1.13",
     "@types/cosmiconfig": "5.0.3",
     "@types/fs-extra": "8.0.0",
