@@ -7,6 +7,8 @@ import {FileService} from './FileService';
 import {Entry, TerminalOptions} from './interfaces';
 
 class BuildService {
+  public outputFile: string | null;
+  public compressedFilesCount: number;
   private readonly fileService: FileService;
   private readonly ignoreEntries: RegExp[];
   private readonly jszip: JSZip;
@@ -14,8 +16,6 @@ class BuildService {
   private readonly options: Required<TerminalOptions>;
   private readonly progressBar: progress;
   private entries: Entry[];
-  public outputFile: string | null;
-  public compressedFilesCount: number;
 
   constructor(options: Required<TerminalOptions>) {
     this.fileService = new FileService(options);
@@ -51,6 +51,26 @@ class BuildService {
     return this;
   }
 
+  public async save(): Promise<BuildService> {
+    await this.checkOutput();
+
+    await Promise.all(this.entries.map(entry => this.checkEntry(entry)));
+    const data = await this.getBuffer();
+
+    if (this.outputFile) {
+      if (!this.outputFile.match(/\.\w+$/)) {
+        this.outputFile = path.join(this.outputFile, 'data.zip');
+      }
+
+      this.logger.info(`Saving finished zip file to "${this.outputFile}" ...`);
+      await this.fileService.writeFile(data, this.outputFile);
+    } else {
+      process.stdout.write(data);
+    }
+
+    return this;
+  }
+
   private getBuffer(): Promise<Buffer> {
     const compressionType = this.options.compressionLevel === 0 ? 'STORE' : 'DEFLATE';
     let lastPercent = 0;
@@ -71,26 +91,6 @@ class BuildService {
         }
       }
     );
-  }
-
-  public async save(): Promise<BuildService> {
-    await this.checkOutput();
-
-    await Promise.all(this.entries.map(entry => this.checkEntry(entry)));
-    const data = await this.getBuffer();
-
-    if (this.outputFile) {
-      if (!this.outputFile.match(/\.\w+$/)) {
-        this.outputFile = path.join(this.outputFile, 'data.zip');
-      }
-
-      this.logger.info(`Saving finished zip file to "${this.outputFile}" ...`);
-      await this.fileService.writeFile(data, this.outputFile);
-    } else {
-      process.stdout.write(data);
-    }
-
-    return this;
   }
 
   private async addFile(entry: Entry, isLink = false): Promise<void> {
