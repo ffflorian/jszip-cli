@@ -43,41 +43,6 @@ export class JSZipCLI {
     this.extractService = new ExtractService(this.options);
   }
 
-  private checkConfigFile() {
-    if (!this.options.configFile) {
-      this.logger.info('Not using any configuration file.');
-      return;
-    }
-
-    let configResult: cosmiconfig.CosmiconfigResult = null;
-
-    if (typeof this.options.configFile === 'string') {
-      try {
-        configResult = this.configExplorer.loadSync(this.options.configFile);
-      } catch (error) {
-        throw new Error(`Can't read configuration file: ${error.message}`);
-      }
-    } else if (this.options.configFile === true) {
-      try {
-        configResult = this.configExplorer.searchSync();
-      } catch (error) {
-        this.logger.error(error);
-      }
-    }
-
-    if (!configResult || configResult.isEmpty) {
-      this.logger.info('Not using any configuration file.');
-      return;
-    }
-
-    const configFileData = configResult.config as ConfigFileOptions;
-
-    this.logger.info(`Using configuration file ${configResult.filepath}`);
-
-    this.options = {...defaultOptions, ...configFileData, ...this.terminalOptions};
-    this.logger.state = {isEnabled: this.options.verbose};
-  }
-
   /**
    * Add files and directories to the ZIP file.
    * @param rawEntries The entries (files, directories) to add.
@@ -141,5 +106,40 @@ export class JSZipCLI {
 
   public save(): Promise<BuildService> {
     return this.buildService.save();
+  }
+
+  private checkConfigFile(): void {
+    if (!this.options.configFile) {
+      this.logger.info('Not using any configuration file.');
+      return;
+    }
+
+    let configResult: cosmiconfig.CosmiconfigResult = null;
+
+    if (typeof this.options.configFile === 'string') {
+      try {
+        configResult = this.configExplorer.loadSync(this.options.configFile);
+      } catch (error) {
+        throw new Error(`Can't read configuration file: ${error.message}`);
+      }
+    } else if (this.options.configFile === true) {
+      try {
+        configResult = this.configExplorer.searchSync();
+      } catch (error) {
+        this.logger.error(error);
+      }
+    }
+
+    if (!configResult || configResult.isEmpty) {
+      this.logger.info('Not using any configuration file.');
+      return;
+    }
+
+    const configFileData = configResult.config as ConfigFileOptions;
+
+    this.logger.info(`Using configuration file ${configResult.filepath}`);
+
+    this.options = {...defaultOptions, ...configFileData, ...this.terminalOptions};
+    this.logger.state = {isEnabled: this.options.verbose};
   }
 }

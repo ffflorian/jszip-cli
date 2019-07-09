@@ -7,11 +7,11 @@ import * as progress from 'progress';
 import {TerminalOptions} from './interfaces';
 
 class ExtractService {
+  public outputDir: string | null;
+  public extractedFilesCount: number;
   private readonly logger: logdown.Logger;
   private readonly options: Required<TerminalOptions>;
   private readonly progressBar: progress;
-  public outputDir: string | null;
-  public extractedFilesCount: number;
 
   constructor(options: Required<TerminalOptions>) {
     this.options = options;
