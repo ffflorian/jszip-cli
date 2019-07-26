@@ -35,10 +35,10 @@
   resolved "https://registry.npmjs.org/@ffflorian/semantic-release-config/-/semantic-release-config-0.1.2.tgz#042e1d2d9d7fbc509bef351a34ff3e8eaaffc878"
   integrity sha512-wZav1M9BvIAxWBWfoSfnepQ47f8e4GuqJTJ3IIpnQvjX17kRPlKft2qwKF0Ih9OFX+xs962hYytIML8Y0zdNHQ==
 
-"@ffflorian/tslint-config@0.4.0":
-  version "0.4.0"
-  resolved "https://registry.npmjs.org/@ffflorian/tslint-config/-/tslint-config-0.4.0.tgz#beb10f7d47e43687eaa36651ec6e9d503464ce93"
-  integrity sha512-+50sRtAO9CeRcSaFVgQ9dtsbFer2rN8jqx0bpDlhL6j2Tl/r/5MOi9af18qyZB/yRCwmj3DWOyUUn2pJjU0NXw==
+"@ffflorian/tslint-config@0.5.0":
+  version "0.5.0"
+  resolved "https://registry.npmjs.org/@ffflorian/tslint-config/-/tslint-config-0.5.0.tgz#c1e59418c0bc76064ac7fdadc7e0075891126f9f"
+  integrity sha512-3wHzfIEw9B5gb2GVkfxhzhRkiIYWVpPzZIobcGMxya6XTmvsYfUSAeADKxhKgF9cv9nd5l41QMXrZQ/bd0IQWQ==
 
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
