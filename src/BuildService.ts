@@ -7,15 +7,15 @@ import {FileService} from './FileService';
 import {Entry, TerminalOptions} from './interfaces';
 
 class BuildService {
-  public outputFile: string | null;
   public compressedFilesCount: number;
+  public outputFile: string | null;
+  private entries: Entry[];
   private readonly fileService: FileService;
   private readonly ignoreEntries: RegExp[];
   private readonly jszip: JSZip;
   private readonly logger: logdown.Logger;
   private readonly options: Required<TerminalOptions>;
   private readonly progressBar: progress;
-  private entries: Entry[];
 
   constructor(options: Required<TerminalOptions>) {
     this.fileService = new FileService(options);
@@ -69,28 +69,6 @@ class BuildService {
     }
 
     return this;
-  }
-
-  private getBuffer(): Promise<Buffer> {
-    const compressionType = this.options.compressionLevel === 0 ? 'STORE' : 'DEFLATE';
-    let lastPercent = 0;
-
-    return this.jszip.generateAsync(
-      {
-        compression: compressionType,
-        compressionOptions: {
-          level: this.options.compressionLevel,
-        },
-        type: 'nodebuffer',
-      },
-      ({percent}) => {
-        const diff = Math.floor(percent) - Math.floor(lastPercent);
-        if (diff && !this.options.quiet) {
-          this.progressBar.tick(diff);
-          lastPercent = Math.floor(percent);
-        }
-      }
-    );
   }
 
   private async addFile(entry: Entry, isLink = false): Promise<void> {
@@ -204,6 +182,28 @@ class BuildService {
         }
       }
     }
+  }
+
+  private getBuffer(): Promise<Buffer> {
+    const compressionType = this.options.compressionLevel === 0 ? 'STORE' : 'DEFLATE';
+    let lastPercent = 0;
+
+    return this.jszip.generateAsync(
+      {
+        compression: compressionType,
+        compressionOptions: {
+          level: this.options.compressionLevel,
+        },
+        type: 'nodebuffer',
+      },
+      ({percent}) => {
+        const diff = Math.floor(percent) - Math.floor(lastPercent);
+        if (diff && !this.options.quiet) {
+          this.progressBar.tick(diff);
+          lastPercent = Math.floor(percent);
+        }
+      }
+    );
   }
 
   private async walkDir(entry: Entry): Promise<void> {
