@@ -17,10 +17,10 @@ const defaultOptions: Required<TerminalOptions> = {
 
 export class JSZipCLI {
   private readonly buildService: BuildService;
-  private readonly extractService: ExtractService;
-  private readonly logger: logdown.Logger;
   private readonly configExplorer: cosmiconfig.Explorer;
   private readonly configFile?: string;
+  private readonly extractService: ExtractService;
+  private readonly logger: logdown.Logger;
   private options: Required<TerminalOptions> & Partial<ConfigFileOptions>;
   private readonly terminalOptions?: TerminalOptions;
 

@@ -7,8 +7,8 @@ import * as progress from 'progress';
 import {TerminalOptions} from './interfaces';
 
 class ExtractService {
-  public outputDir: string | null;
   public extractedFilesCount: number;
+  public outputDir: string | null;
   private readonly logger: logdown.Logger;
   private readonly options: Required<TerminalOptions>;
   private readonly progressBar: progress;
