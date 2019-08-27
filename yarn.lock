@@ -4453,10 +4453,10 @@ psl@^1.1.24:
   resolved "https://registry.npmjs.org/psl/-/psl-1.1.31.tgz#e9aa86d0101b5b105cbe93ac6b784cd547276184"
   integrity sha512-/6pt4+C+T+wZUieKR620OpzN/LlnNKuWjy1iFLQ/UG35JqHlR/89MP1d96dUfkf6Dne3TuLQzOYEYshJ+Hx8mw==
 
-publish-flat@1.3.0:
-  version "1.3.0"
-  resolved "https://registry.npmjs.org/publish-flat/-/publish-flat-1.3.0.tgz#898fdb6d6d820d9a2cb1f9844e2d8bd05c0939fd"
-  integrity sha512-gbH7qdAw6JPgDEioj+VLlnuqmWTZ+aUcjOrr547VUBWbjZctVMBBlD36ydYsgvh0Z5s8WmyKDgcroWGpIrP/qQ==
+publish-flat@1.3.1:
+  version "1.3.1"
+  resolved "https://registry.npmjs.org/publish-flat/-/publish-flat-1.3.1.tgz#890a252577a33b7e5877dad2e4bbd115abc8cd68"
+  integrity sha512-S0txWcPHFZ/4G6dNxoiSPbea+QFKOfTJv8g4a2tNTKdx/cjazhgr95PoNwTNqMcCmiKHmPSY+RN4GoZgW30Deg==
   dependencies:
     "@expo/spawn-async" "1.5.0"
     commander "3.0.0"
