@@ -35,10 +35,10 @@
   resolved "https://registry.npmjs.org/@ffflorian/semantic-release-config/-/semantic-release-config-0.1.3.tgz#33daf283a0ee0540392104ceb6bea778b7d40c99"
   integrity sha512-l+6Cj4bhBaNcHnppfCHn/jBpvCUhvTsv3TWOQLgSQpUzZW2u23xhmqezTJW1zqTynhKm2emHIbS32Y3N7RKWYQ==
 
-"@ffflorian/tslint-config@0.5.0":
-  version "0.5.0"
-  resolved "https://registry.npmjs.org/@ffflorian/tslint-config/-/tslint-config-0.5.0.tgz#c1e59418c0bc76064ac7fdadc7e0075891126f9f"
-  integrity sha512-3wHzfIEw9B5gb2GVkfxhzhRkiIYWVpPzZIobcGMxya6XTmvsYfUSAeADKxhKgF9cv9nd5l41QMXrZQ/bd0IQWQ==
+"@ffflorian/tslint-config@0.7.0":
+  version "0.7.0"
+  resolved "https://registry.npmjs.org/@ffflorian/tslint-config/-/tslint-config-0.7.0.tgz#1db6da16e17382e6b27e346dc4c699ba01112c2a"
+  integrity sha512-mMeU+i7EHh+d8JvvpSIxEA2Tl/l/6ylfpYBoCCFnQ09mrMIQCIlbLcvWgut/I9Nz0/MsiHd2gxC4xDAJLOwskw==
 
 "@nodelib/fs.scandir@2.1.1":
   version "2.1.1"
