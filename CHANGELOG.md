@@ -1,3 +1,9 @@
+## [3.0.1](https://github.com/ffflorian/jszip-cli/compare/v3.0.0...v3.0.1) (2019-09-06)
+
+### Bug Fixes
+
+- Use postversion when publishing ([0761569](https://github.com/ffflorian/jszip-cli/commit/0761569))
+
 # [3.0.0](https://github.com/ffflorian/jszip-cli/compare/v2.3.1...v3.0.0) (2019-07-17)
 
 ### Features
