@@ -30,10 +30,10 @@
   resolved "https://registry.npmjs.org/@ffflorian/prettier-config/-/prettier-config-0.0.5.tgz#5a6872fa650ac3b1312d5c5bc4d8281c7ca7b0ab"
   integrity sha512-GA3LYDYsLB23x85qIY6LaDkzSsxkguKPm8F1XSP7YEjpyFvpbwLj8G3owFJGEyImOwZZWH0WQRPFczCv6uSqrg==
 
-"@ffflorian/semantic-release-config@0.1.3":
-  version "0.1.3"
-  resolved "https://registry.npmjs.org/@ffflorian/semantic-release-config/-/semantic-release-config-0.1.3.tgz#33daf283a0ee0540392104ceb6bea778b7d40c99"
-  integrity sha512-l+6Cj4bhBaNcHnppfCHn/jBpvCUhvTsv3TWOQLgSQpUzZW2u23xhmqezTJW1zqTynhKm2emHIbS32Y3N7RKWYQ==
+"@ffflorian/semantic-release-config@0.1.4":
+  version "0.1.4"
+  resolved "https://registry.npmjs.org/@ffflorian/semantic-release-config/-/semantic-release-config-0.1.4.tgz#1d5d5f664994c474b676014113635dd8aa53642b"
+  integrity sha512-UyzvS7S8ZcmlqrtW5qPI1hYnZLH7Ff8WsJf/EsQGYeQHKiYZVjWzdTPx9EJVH0qyNmoMHX2wF/tbGe3aBoV4zg==
 
 "@ffflorian/tslint-config@0.7.0":
   version "0.7.0"
