@@ -15,13 +15,18 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 10.x
-      - name: Build, test and release
+      - name: Build and test
         run: |
           yarn
           yarn lint
           yarn test
           yarn dist
           yarn flatten
+        if: |
+          contains(github.event.commits[0].message, '[skip ci]') == false &&
+          contains(github.event.commits[0].message, '[ci skip]') == false
+      - name: Release on npm
+        run: |
           git config --global "user.email" "${GIT_EMAIL}"
           git config --global "user.name" "${GIT_NAME}"
           REPO_URL="$(git remote get-url origin | sed -n "s/https:\/\/github.com\//https:\/\/${GIT_AUTHOR_NAME}:${GH_TOKEN}@github.com\//p")"
@@ -33,6 +38,17 @@ jobs:
           GIT_COMMITTER_EMAIL: ffflobot@users.noreply.github.com
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        if: |
+          contains(github.event.commits[0].message, '[skip ci]') == false &&
+          contains(github.event.commits[0].message, '[ci skip]') == false
+      - name: Release on GitHub
+        run: |
+          rm .npmrc
+          echo "//npm.pkg.github.com/:_authToken=${GH_TOKEN}" > ~/.npmrc
+          cd flattened
+          npm publish --registry=https://npm.pkg.github.com || true
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         if: |
           contains(github.event.commits[0].message, '[skip ci]') == false &&
           contains(github.event.commits[0].message, '[ci skip]') == false
