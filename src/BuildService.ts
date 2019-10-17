@@ -91,7 +91,8 @@ class BuildService {
     this.jszip.file(zipPath, fileData, {
       createFolders: true,
       date: fileStat.mtime,
-      //dosPermissions: fileStat.mode,
+      // See https://github.com/Stuk/jszip/issues/550
+      // dosPermissions: fileStat.mode,
       unixPermissions: fileStat.mode,
     });
 
