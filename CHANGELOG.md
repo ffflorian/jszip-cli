@@ -1,3 +1,9 @@
+## [3.0.2](https://github.com/ffflorian/jszip-cli/compare/v3.0.1...v3.0.2) (2019-10-17)
+
+### Bug Fixes
+
+- Don't add dot folder ([a54453e](https://github.com/ffflorian/jszip-cli/commit/a54453e))
+
 ## [3.0.1](https://github.com/ffflorian/jszip-cli/compare/v3.0.0...v3.0.1) (2019-09-06)
 
 ### Bug Fixes
