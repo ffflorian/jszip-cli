@@ -3,7 +3,7 @@ import * as logdown from 'logdown';
 import * as path from 'path';
 import {TerminalOptions} from './interfaces';
 
-class FileService {
+export class FileService {
   private readonly logger: logdown.Logger;
   private readonly options: Required<TerminalOptions>;
   constructor(options: Required<TerminalOptions>) {
@@ -75,5 +75,3 @@ class FileService {
     throw new Error(`File "${this.options.outputEntry}" already exists.`);
   }
 }
-
-export {FileService};

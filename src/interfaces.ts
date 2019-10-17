@@ -1,4 +1,4 @@
-interface TerminalOptions {
+export interface TerminalOptions {
   /** The compression level to use (0 = save only, 9 = best compression) (default: 5). */
   compressionLevel?: number;
   /** Use a configuration file (default: .jsziprc.json). */
@@ -17,16 +17,14 @@ interface TerminalOptions {
   verbose?: boolean;
 }
 
-interface ConfigFileOptions extends TerminalOptions {
+export interface ConfigFileOptions extends TerminalOptions {
   /** Which files or directories to add. */
   entries: string[];
   /** Add or extract files. */
   mode: 'add' | 'extract';
 }
 
-interface Entry {
+export interface Entry {
   resolvedPath: string;
   zipPath: string;
 }
-
-export {ConfigFileOptions, Entry, TerminalOptions};

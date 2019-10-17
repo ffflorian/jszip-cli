@@ -6,7 +6,7 @@ import * as progress from 'progress';
 import {FileService} from './FileService';
 import {Entry, TerminalOptions} from './interfaces';
 
-class BuildService {
+export class BuildService {
   public compressedFilesCount: number;
   public outputFile: string | null;
   private entries: Entry[];
@@ -220,5 +220,3 @@ class BuildService {
     }
   }
 }
-
-export {BuildService};

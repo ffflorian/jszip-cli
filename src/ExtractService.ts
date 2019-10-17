@@ -6,7 +6,7 @@ import * as path from 'path';
 import * as progress from 'progress';
 import {TerminalOptions} from './interfaces';
 
-class ExtractService {
+export class ExtractService {
   public extractedFilesCount: number;
   public outputDir: string | null;
   private readonly logger: logdown.Logger;
@@ -92,5 +92,3 @@ class ExtractService {
     });
   }
 }
-
-export {ExtractService};
