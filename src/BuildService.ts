@@ -88,7 +88,7 @@ class BuildService {
 
     this.logger.info(`Adding file "${resolvedPath}" to ZIP file ...`);
 
-    await this.jszip.file(zipPath, fileData, {
+    this.jszip.file(zipPath, fileData, {
       createFolders: true,
       date: fileStat.mtime,
       //dosPermissions: fileStat.mode,
@@ -210,7 +210,7 @@ class BuildService {
     this.logger.info(`Walking directory ${entry.resolvedPath} ...`);
     const dirEntries = await fs.readdir(entry.resolvedPath);
     for (const dirEntry of dirEntries) {
-      const newZipPath = `${entry.zipPath}/${dirEntry}`;
+      const newZipPath = entry.zipPath === '.' ? dirEntry : `${entry.zipPath}/${dirEntry}`;
       const newResolvedPath = path.join(entry.resolvedPath, dirEntry);
       await this.checkEntry({
         resolvedPath: newResolvedPath,
