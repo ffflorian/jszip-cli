@@ -4159,10 +4159,10 @@ safe-buffer@~5.1.0, safe-buffer@~5.1.1:
   resolved "https://registry.npmjs.org/safer-buffer/-/safer-buffer-2.1.2.tgz#44fa161b0187b9549dd84bb91802f9bd8385cd6a"
   integrity sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==
 
-semantic-release@15.13.27:
-  version "15.13.27"
-  resolved "https://registry.npmjs.org/semantic-release/-/semantic-release-15.13.27.tgz#214be952fdff5b9ba8490e49c5be13e4d0108ead"
-  integrity sha512-Os9tGsOMCrWqW8cEo0zczoJnZcZzwHAWODmziff+8zU1gwPmLplAicJ5a3L43ubWtAsp2hVPf9WhWj2lMXoIGQ==
+semantic-release@15.13.28:
+  version "15.13.28"
+  resolved "https://registry.npmjs.org/semantic-release/-/semantic-release-15.13.28.tgz#c47457fafd5bf11f1722a708fa8b897d42837762"
+  integrity sha512-TqmRAsTFPq+hi0LjccUIHIknpW2wBPqVZWc/fVBBeeokuZ+wfGcP/Vo8nKci7VTHBl0D/EAu6gNvo343dKjWUA==
   dependencies:
     "@semantic-release/commit-analyzer" "^6.1.0"
     "@semantic-release/error" "^2.2.0"
@@ -4173,7 +4173,7 @@ semantic-release@15.13.27:
     cosmiconfig "^5.0.1"
     debug "^4.0.0"
     env-ci "^4.0.0"
-    execa "^1.0.0"
+    execa "^3.2.0"
     figures "^3.0.0"
     find-versions "^3.0.0"
     get-stream "^5.0.0"
