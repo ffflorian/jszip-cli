@@ -4,7 +4,7 @@
     "jszip-cli": "dist/cli.js"
   },
   "dependencies": {
-    "commander": "3.0.2",
+    "commander": "4.0.0",
     "cosmiconfig": "5.2.1",
     "fs-extra": "8.1.0",
     "jszip": "3.2.2",
