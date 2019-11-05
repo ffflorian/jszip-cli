@@ -1,5 +1,7 @@
-import cosmiconfig = require('cosmiconfig');
+import {cosmiconfigSync} from 'cosmiconfig';
+import {CosmiconfigResult} from 'cosmiconfig/dist/types';
 import * as logdown from 'logdown';
+
 import {BuildService} from './BuildService';
 import {ExtractService} from './ExtractService';
 import {ConfigFileOptions, TerminalOptions} from './interfaces';
@@ -17,7 +19,7 @@ const defaultOptions: Required<TerminalOptions> = {
 
 export class JSZipCLI {
   private readonly buildService: BuildService;
-  private readonly configExplorer: cosmiconfig.Explorer;
+  private readonly configExplorer: ReturnType<typeof cosmiconfigSync>;
   private readonly configFile?: string;
   private readonly extractService: ExtractService;
   private readonly logger: logdown.Logger;
@@ -30,7 +32,7 @@ export class JSZipCLI {
       logger: console,
       markdown: false,
     });
-    this.configExplorer = cosmiconfig('jszip');
+    this.configExplorer = cosmiconfigSync('jszip');
 
     this.options = {...defaultOptions, ...this.terminalOptions};
     this.logger.state = {isEnabled: this.options.verbose};
@@ -114,17 +116,17 @@ export class JSZipCLI {
       return;
     }
 
-    let configResult: cosmiconfig.CosmiconfigResult = null;
+    let configResult: CosmiconfigResult = null;
 
     if (typeof this.options.configFile === 'string') {
       try {
-        configResult = this.configExplorer.loadSync(this.options.configFile);
+        configResult = this.configExplorer.load(this.options.configFile);
       } catch (error) {
         throw new Error(`Can't read configuration file: ${error.message}`);
       }
     } else if (this.options.configFile === true) {
       try {
-        configResult = this.configExplorer.searchSync();
+        configResult = this.configExplorer.search();
       } catch (error) {
         this.logger.error(error);
       }
