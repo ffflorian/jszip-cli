@@ -12,7 +12,7 @@ export class FileService {
       logger: console,
       markdown: false,
     });
-    this.logger.state = {isEnabled: this.options.verbose};
+    this.logger.state.isEnabled = this.options.verbose;
   }
 
   public async dirExists(dirPath: string): Promise<boolean> {

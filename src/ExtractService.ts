@@ -19,7 +19,7 @@ export class ExtractService {
       logger: console,
       markdown: false,
     });
-    this.logger.state = {isEnabled: this.options.verbose};
+    this.logger.state.isEnabled = this.options.verbose;
     this.outputDir = this.options.outputEntry ? path.resolve(this.options.outputEntry) : null;
     this.progressBar = new progress('Extracting [:bar] :percent :elapseds', {
       complete: '=',

@@ -35,7 +35,7 @@ export class JSZipCLI {
     this.configExplorer = cosmiconfigSync('jszip');
 
     this.options = {...defaultOptions, ...this.terminalOptions};
-    this.logger.state = {isEnabled: this.options.verbose};
+    this.logger.state.isEnabled = this.options.verbose;
 
     this.checkConfigFile();
 
@@ -142,6 +142,6 @@ export class JSZipCLI {
     this.logger.info(`Using configuration file ${configResult.filepath}`);
 
     this.options = {...defaultOptions, ...configFileData, ...this.terminalOptions};
-    this.logger.state = {isEnabled: this.options.verbose};
+    this.logger.state.isEnabled = this.options.verbose;
   }
 }
