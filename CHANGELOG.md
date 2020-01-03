@@ -1,3 +1,9 @@
+# [3.1.0](https://github.com/ffflorian/jszip-cli/compare/v3.0.2...v3.1.0) (2020-01-03)
+
+### Features
+
+- Allow RegExp for ignoreEntries ([#318](https://github.com/ffflorian/jszip-cli/issues/318)) ([e9fa8b5](https://github.com/ffflorian/jszip-cli/commit/e9fa8b5))
+
 ## [3.0.2](https://github.com/ffflorian/jszip-cli/compare/v3.0.1...v3.0.2) (2019-10-17)
 
 ### Bug Fixes
