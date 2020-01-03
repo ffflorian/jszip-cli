@@ -31,9 +31,6 @@ jobs:
           yarn test
           yarn dist
           yarn flatten
-        if: |
-          contains(github.event.commits[0].message, '[skip ci]') == false &&
-          contains(github.event.commits[0].message, '[ci skip]') == false
       - name: Release on npm
         run: |
           git config --global "user.email" "${GIT_EMAIL}"
@@ -47,9 +44,6 @@ jobs:
           GIT_COMMITTER_EMAIL: ffflobot@users.noreply.github.com
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        if: |
-          contains(github.event.commits[0].message, '[skip ci]') == false &&
-          contains(github.event.commits[0].message, '[ci skip]') == false
       - name: Release on GitHub
         run: |
           rm .npmrc
@@ -59,6 +53,3 @@ jobs:
           npm publish --registry=https://npm.pkg.github.com || true
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
-        if: |
-          contains(github.event.commits[0].message, '[skip ci]') == false &&
-          contains(github.event.commits[0].message, '[ci skip]') == false
