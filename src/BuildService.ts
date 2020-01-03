@@ -27,7 +27,9 @@ export class BuildService {
     });
     this.logger.state = {isEnabled: options.verbose};
     this.entries = [];
-    this.ignoreEntries = this.options.ignoreEntries.map(entry => new RegExp(entry.replace('*', '.*')));
+    this.ignoreEntries = this.options.ignoreEntries.map(entry =>
+      entry instanceof RegExp ? entry : new RegExp(entry.replace('*', '.*'))
+    );
     this.outputFile = this.options.outputEntry ? path.resolve(this.options.outputEntry) : null;
     this.progressBar = new progress('Compressing [:bar] :percent :elapseds', {
       complete: '=',

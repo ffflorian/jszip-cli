@@ -59,7 +59,7 @@ The structure of the configuration file is the following:
   force?: boolean;
 
   /** Ignore entries (e.g. `*.js.map`). */
-  ignoreEntries?: string[];
+  ignoreEntries?: Array<string | RegExp>;
 
   /** Add or extract files. */
   mode: 'add' | 'extract';
