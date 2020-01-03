@@ -5,10 +5,11 @@ module.exports = {
   ],
   force: true,
   ignoreEntries: [
-    '*.map'
+    '*.map',
+    new RegExp('\\.html?$')
   ],
   mode: 'extract',
-  outputEntry: 'dist2/',
+  outputEntry: 'dist/',
   quiet: false,
   verbose: false,
 };
