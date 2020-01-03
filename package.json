@@ -13,7 +13,7 @@
   },
   "description": "A zip CLI based on jszip.",
   "devDependencies": {
-    "@ffflorian/prettier-config": "0.0.5",
+    "@ffflorian/prettier-config": "0.0.6",
     "@ffflorian/semantic-release-config": "0.1.4",
     "@ffflorian/tslint-config": "0.7.0",
     "@semantic-release/changelog": "3.0.6",
