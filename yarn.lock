@@ -25,13 +25,6 @@
   dependencies:
     regenerator-runtime "^0.13.2"
 
-"@expo/spawn-async@1.5.0":
-  version "1.5.0"
-  resolved "https://registry.npmjs.org/@expo/spawn-async/-/spawn-async-1.5.0.tgz#799827edd8c10ef07eb1a2ff9dcfe081d596a395"
-  integrity sha512-LB7jWkqrHo+5fJHNrLAFdimuSXQ2MQ4lA7SQW5bf/HbsXuV2VrT/jN/M8f/KoWt0uJMGN4k/j7Opx4AvOOxSew==
-  dependencies:
-    cross-spawn "^6.0.5"
-
 "@ffflorian/prettier-config@0.0.6":
   version "0.0.6"
   resolved "https://registry.npmjs.org/@ffflorian/prettier-config/-/prettier-config-0.0.6.tgz#2417939d5c5c658e3f13783eb923fbdef3c78ff2"
@@ -124,11 +117,6 @@
   integrity sha512-MI4Xx6LHs4Webyvi6EbspgyAb4D2Q2VtnCQ1blOJcoLS6mVa8lNN2rkIy1CVxfTUpoyIbCTkXES1rLXztFD1lg==
   dependencies:
     any-observable "^0.3.0"
-
-"@schemastore/package@0.0.5":
-  version "0.0.5"
-  resolved "https://registry.npmjs.org/@schemastore/package/-/package-0.0.5.tgz#67b621d5c833ad2d5a29a1acf868717b7839bb8a"
-  integrity sha512-0XEiMT/Rh8I0SEIO81fo5MN3AHhONFv9SJ1IIJ5OTI3PN/jG032OPlHUMxvrun7yc6YUGtufVg2WPQVK8PaH5Q==
 
 "@semantic-release/changelog@3.0.6":
   version "3.0.6"
@@ -993,11 +981,6 @@ commander-remaining-args@1.2.0:
   version "1.2.0"
   resolved "https://registry.npmjs.org/commander-remaining-args/-/commander-remaining-args-1.2.0.tgz#6fab4cce4a59db1698121f59105364adcb0b4c68"
   integrity sha512-yH0yRUtHhJ/389HWgQlEMAwqKXMZr/JJH4xqDIzXCisNy2mS6YSAe3WncgjxZvhLJqZPxJn8MivRK+B0lSNXPw==
-
-commander@3.0.2:
-  version "3.0.2"
-  resolved "https://registry.npmjs.org/commander/-/commander-3.0.2.tgz#6837c3fb677ad9933d1cfba42dd14d5117d6b39e"
-  integrity sha512-Gar0ASD4BDyKC4hl4DwHqDrmvjoxWKZigVnAbn5H1owvm4CxCPdb0HQDehwNYMJpla5+M2tPmPARzhtYuwpHow==
 
 commander@4.1.0:
   version "4.1.0"
@@ -2000,7 +1983,7 @@ glob-parent@^5.0.0:
   dependencies:
     is-glob "^4.0.1"
 
-glob@^7.0.3, glob@^7.1.1, glob@^7.1.3, glob@^7.1.4:
+glob@^7.0.3, glob@^7.1.1, glob@^7.1.3, glob@^7.1.4, glob@^7.1.6:
   version "7.1.6"
   resolved "https://registry.npmjs.org/glob/-/glob-7.1.6.tgz#141f33b81a7c2492e125594307480c46679278a6"
   integrity sha512-LwaxwyZ72Lk7vZINtNNrywX0ZuLyStrdDtabefZKAY5ZGJhVtgdznluResxNmPitE0SAO+O26sWTHeKSI2wMBA==
@@ -2256,7 +2239,7 @@ iferr@^1.0.2:
   resolved "https://registry.npmjs.org/iferr/-/iferr-1.0.2.tgz#e9fde49a9da06dc4a4194c6c9ed6d08305037a6d"
   integrity sha512-9AfeLfji44r5TKInjhz3W9DyZI1zR1JAf2hVBMGhddAKPqBsupb89jGfbCTHIGZd6fGZl9WlHdn4AObygyMKwg==
 
-ignore-walk@^3.0.1:
+ignore-walk@^3.0.1, ignore-walk@^3.0.3:
   version "3.0.3"
   resolved "https://registry.npmjs.org/ignore-walk/-/ignore-walk-3.0.3.tgz#017e2447184bfeade7c238e4aefdd1e8f95b1e37"
   integrity sha512-m7o6xuOaT1aqheYHKf8W6J5pYH85ZI9w077erOzLje3JsB1gkafkAhHHY19dqjulgIZHFm32Cp5uNZgcQqdJKw==
@@ -3221,13 +3204,6 @@ log-update@^2.3.0:
     cli-cursor "^2.0.0"
     wrap-ansi "^3.0.1"
 
-logdown@3.2.8:
-  version "3.2.8"
-  resolved "https://registry.npmjs.org/logdown/-/logdown-3.2.8.tgz#0bfff0c260a4a55f289f6b4420daefec30479843"
-  integrity sha512-ia/AslkwnxwWzaReeADifBwfh2xtUd/T/qdsnkrPlQbefKt4LkUWGSn/xWuhEwY3p2zSIhAZYcWCEGGIy9Lr2w==
-  dependencies:
-    chalk "^2.3.0"
-
 logdown@3.3.0:
   version "3.3.0"
   resolved "https://registry.npmjs.org/logdown/-/logdown-3.3.0.tgz#639dd2d3becaf0d9657ab63e812fa0e0f0b19fe7"
@@ -3725,13 +3701,15 @@ npm-normalize-package-bin@^1.0.0, npm-normalize-package-bin@^1.0.1:
     semver "^5.6.0"
     validate-npm-package-name "^3.0.0"
 
-npm-packlist@1.4.6:
-  version "1.4.6"
-  resolved "https://registry.npmjs.org/npm-packlist/-/npm-packlist-1.4.6.tgz#53ba3ed11f8523079f1457376dd379ee4ea42ff4"
-  integrity sha512-u65uQdb+qwtGvEJh/DgQgW1Xg7sqeNbmxYyrvlNznaVTjV3E5P6F/EFjM+BVHXl7JJlsdG8A64M0XI8FI/IOlg==
+npm-packlist@2.0.3:
+  version "2.0.3"
+  resolved "https://registry.npmjs.org/npm-packlist/-/npm-packlist-2.0.3.tgz#0044b36971039fc3b46a090ed663feb547147257"
+  integrity sha512-geT5P1y+58INE/jlxBHNsucRX7jpZAgW+XkxAe1NWN7N9SNwpueWTUPRoVdJH+hFpqcdAChRUE/HWsXQI+8JaQ==
   dependencies:
-    ignore-walk "^3.0.1"
+    glob "^7.1.6"
+    ignore-walk "^3.0.3"
     npm-bundled "^1.0.1"
+    npm-normalize-package-bin "^1.0.1"
 
 npm-packlist@^1.1.12, npm-packlist@^1.4.7:
   version "1.4.7"
@@ -4430,18 +4408,16 @@ psl@^1.1.24:
   resolved "https://registry.npmjs.org/psl/-/psl-1.6.0.tgz#60557582ee23b6c43719d9890fb4170ecd91e110"
   integrity sha512-SYKKmVel98NCOYXpkwUqZqh0ahZeeKfmisiLIcEZdsb+WbLv02g/dI5BUmZnIyOe7RzZtLax81nnb2HbvC2tzA==
 
-publish-flat@1.3.4:
-  version "1.3.4"
-  resolved "https://registry.npmjs.org/publish-flat/-/publish-flat-1.3.4.tgz#ed28caf99e01bb1361b01d46a41d943525cf3810"
-  integrity sha512-LPNm+Pg+s8svkH/lLBx9wT/0NjFP+/bSdOFuwRq5ufJI2EtERPSB3u9M8VwL54/KAgBRg08dNQgS2Xeo4wsQfA==
+publish-flat@1.4.0:
+  version "1.4.0"
+  resolved "https://registry.npmjs.org/publish-flat/-/publish-flat-1.4.0.tgz#11ccf93f26f5a8a42089b66abb20c8181badfc78"
+  integrity sha512-HWDhPvZb6RQxfqqXf+EN68Ui+kTWkF6APmI/LFFyxYwXXeQq8aHFDA/PZx03+WUCgDsgEerSXC3vtah4V3gWWw==
   dependencies:
-    "@expo/spawn-async" "1.5.0"
-    "@schemastore/package" "0.0.5"
-    commander "3.0.2"
+    commander "4.1.0"
     commander-remaining-args "1.2.0"
     fs-extra "8.1.0"
-    logdown "3.2.8"
-    npm-packlist "1.4.6"
+    logdown "3.3.0"
+    npm-packlist "2.0.3"
 
 pump@^2.0.0:
   version "2.0.1"
