@@ -51,16 +51,13 @@
   "license": "GPL-3.0",
   "lint-staged": {
     "*.{json,md}": [
-      "prettier --write",
-      "git add"
+      "prettier --write"
     ],
     "spec/**/*.ts": [
-      "tslint --project tsconfig.jasmine.json --fix",
-      "git add"
+      "tslint --project tsconfig.jasmine.json --fix"
     ],
     "src/**/*.ts": [
-      "tslint --project tsconfig.json --fix",
-      "git add"
+      "tslint --project tsconfig.json --fix"
     ]
   },
   "main": "dist/index.js",
