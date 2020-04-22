@@ -26,7 +26,7 @@
     "husky": "4.2.5",
     "jasmine": "3.5.0",
     "lint-staged": "10.1.7",
-    "prettier": "2.0.4",
+    "prettier": "2.0.5",
     "publish-flat": "1.4.0",
     "rimraf": "3.0.2",
     "semantic-release": "17.0.7",
