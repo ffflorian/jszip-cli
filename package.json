@@ -25,7 +25,7 @@
     "@types/progress": "2.0.3",
     "husky": "4.2.5",
     "jasmine": "3.5.0",
-    "lint-staged": "10.2.0",
+    "lint-staged": "10.2.2",
     "prettier": "2.0.5",
     "publish-flat": "1.4.0",
     "rimraf": "3.0.2",
