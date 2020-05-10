@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import * as program from 'commander';
+import * as commander from 'commander';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 
@@ -15,39 +15,39 @@ const {description, name, version}: {description: string; name: string; version:
   packageJsonPath
 );
 
-program
+commander
   .name(name.replace(/^@[^/]+\//, ''))
   .description(description)
-  .option('--noconfig', `don't look for a configuration file`)
-  .option('-c, --config <path>', `use a configuration file (default: .jsziprc.json)`)
+  .option('--noconfig', "don't look for a configuration file")
+  .option('-c, --config <path>', 'use a configuration file (default: .jsziprc.json)')
   .option('-o, --output <dir>', 'set the output directory (default: stdout)')
   .option('-i, --ignore <entry>', 'ignore a file or directory')
   .option('-f, --force', 'force overwriting files and directories when extracting (default: false)')
   .option('-d, --dereference', 'dereference (follow) links (default: false)')
   .option('-l, --level <number>', 'set the compression level', '5')
   .option('-V, --verbose', 'enable verbose logging (default: false)')
-  .option('-q, --quiet', `don't log anything (default: false)`)
+  .option('-q, --quiet', "don't log anything (default: false)")
   .version(version, '-v, --version')
   .on('command:*', args => {
     console.error(`\n  error: invalid command \`${args[0]}'\n`);
     process.exit(1);
   });
 
-program
+commander
   .command('add')
   .alias('a')
   .description('add files and directories to a new ZIP archive')
-  .option('--noconfig', `don't look for a configuration file`)
-  .option('-c, --config <path>', `use a configuration file (default: .jsziprc.json)`)
+  .option('--noconfig', "don't look for a configuration file")
+  .option('-c, --config <path>', 'use a configuration file (default: .jsziprc.json)')
   .option('-o, --output <dir>', 'set the output directory (default: stdout)')
   .option('-i, --ignore <entry>', 'ignore a file or directory')
   .option('-f, --force', 'force overwriting files and directories when extracting (default: false)')
   .option('-d, --dereference', 'dereference (follow) symlinks (default: false)')
   .option('-l, --level <number>', 'set the compression level', '5')
   .option('-V, --verbose', 'enable verbose logging (default: false)')
-  .option('-q, --quiet', `don't log anything excluding errors (default: false)`)
+  .option('-q, --quiet', "don't log anything excluding errors (default: false)")
   .arguments('[entries...]')
-  .action((entries: string[], {parent}: program.Command) => {
+  .action((entries: string[], {parent}: commander.Command) => {
     try {
       new JSZipCLI({
         ...(parent.level && {compressionLevel: parent.level}),
@@ -63,7 +63,7 @@ program
         .save()
         .then(({outputFile, compressedFilesCount}) => {
           if (parent.output && !parent.quiet) {
-            console.log(`Done compressing ${compressedFilesCount} files to "${outputFile}".`);
+            console.info(`Done compressing ${compressedFilesCount} files to "${outputFile}".`);
           }
         })
         .catch(error => {
@@ -76,19 +76,19 @@ program
     }
   });
 
-program
+commander
   .command('extract')
   .alias('e')
   .description('extract files and directories from ZIP archive(s)')
-  .option('--noconfig', `don't look for a configuration file`, false)
-  .option('-c, --config <path>', `use a configuration file (default: .jsziprc.json)`)
+  .option('--noconfig', "don't look for a configuration file", false)
+  .option('-c, --config <path>', 'use a configuration file (default: .jsziprc.json)')
   .option('-o, --output <dir>', 'set the output directory (default: stdout)')
   .option('-i, --ignore <entry>', 'ignore a file or directory')
   .option('-f, --force', 'force overwriting files and directories (default: false)')
   .option('-V, --verbose', 'enable verbose logging (default: false)')
-  .option('-q, --quiet', `don't log anything excluding errors (default: false)`)
+  .option('-q, --quiet', "don't log anything excluding errors (default: false)")
   .arguments('<archives...>')
-  .action((archives: string[], {parent}: program.Command) => {
+  .action((archives: string[], {parent}: commander.Command) => {
     try {
       new JSZipCLI({
         ...((parent.config && {configFile: parent.config}) || (parent.noconfig && {configFile: false})),
@@ -101,7 +101,7 @@ program
         .extract(archives)
         .then(({outputDir, extractedFilesCount}) => {
           if (parent.output && !parent.quiet) {
-            console.log(`Done extracting ${extractedFilesCount} files to "${outputDir}".`);
+            console.info(`Done extracting ${extractedFilesCount} files to "${outputDir}".`);
           }
         })
         .catch(error => {
@@ -114,21 +114,21 @@ program
     }
   });
 
-program.parse(process.argv);
+commander.parse(process.argv);
 
-if (!program.args.length) {
-  if (program.noconfig) {
-    program.outputHelp();
+if (!commander.args.length) {
+  if (commander.noconfig) {
+    commander.outputHelp();
     process.exit(1);
   }
   try {
     new JSZipCLI({
-      configFile: program.config || true,
-      ...(program.force && {force: program.force}),
-      ...(program.ignore && {ignoreEntries: [program.ignore]}),
-      ...(program.output && {outputEntry: program.output}),
-      ...(program.quiet && {quiet: program.quiet}),
-      ...(program.verbose && {verbose: program.verbose}),
+      configFile: commander.config || true,
+      ...(commander.force && {force: commander.force}),
+      ...(commander.ignore && {ignoreEntries: [commander.ignore]}),
+      ...(commander.output && {outputEntry: commander.output}),
+      ...(commander.quiet && {quiet: commander.quiet}),
+      ...(commander.verbose && {verbose: commander.verbose}),
     })
       .fileMode()
       .catch(error => {

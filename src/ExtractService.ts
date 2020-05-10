@@ -41,7 +41,7 @@ export class ExtractService {
 
       const resolvedPath = path.resolve(entry);
       const data = await fs.readFile(resolvedPath);
-      const entries: Array<[string, JSZip.JSZipObject]> = [];
+      const entries: [string, JSZip.JSZipObject][] = [];
 
       await jszip.loadAsync(data, {createFolders: true});
 
@@ -74,9 +74,11 @@ export class ExtractService {
           }
 
           if (isWin32) {
-            entry.dosPermissions && (await fs.chmod(resolvedFilePath, entry.dosPermissions));
-          } else {
-            entry.unixPermissions && (await fs.chmod(resolvedFilePath, entry.unixPermissions));
+            if (entry.dosPermissions) {
+              await fs.chmod(resolvedFilePath, entry.dosPermissions);
+            }
+          } else if (entry.unixPermissions) {
+            await fs.chmod(resolvedFilePath, entry.unixPermissions);
           }
         })
       );

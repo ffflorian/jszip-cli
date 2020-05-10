@@ -157,7 +157,7 @@ export class BuildService {
       this.logger.info(`Found symbolic link "${entry.resolvedPath}".`);
       await this.addLink(entry);
     } else {
-      this.logger.info(`Unknown file type.`, {fileStat});
+      this.logger.info('Unknown file type.', {fileStat});
       if (!this.options.quiet) {
         console.info(`Can't read file "${entry.resolvedPath}". Ignoring.`);
       }
