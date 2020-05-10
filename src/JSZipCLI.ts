@@ -1,10 +1,10 @@
 import {cosmiconfigSync} from 'cosmiconfig';
-import {CosmiconfigResult} from 'cosmiconfig/dist/types';
+import type {CosmiconfigResult} from 'cosmiconfig/dist/types';
 import * as logdown from 'logdown';
 
 import {BuildService} from './BuildService';
 import {ExtractService} from './ExtractService';
-import {ConfigFileOptions, TerminalOptions} from './interfaces';
+import type {ConfigFileOptions, TerminalOptions} from './interfaces';
 
 const defaultOptions: Required<TerminalOptions> = {
   compressionLevel: 5,
@@ -89,7 +89,7 @@ export class JSZipCLI {
       const {outputFile, compressedFilesCount} = await this.add().save();
 
       if (this.options.outputEntry && !this.options.quiet) {
-        console.log(`Done compressing ${compressedFilesCount} files to "${outputFile}".`);
+        console.info(`Done compressing ${compressedFilesCount} files to "${outputFile}".`);
       }
 
       return this;
@@ -97,13 +97,12 @@ export class JSZipCLI {
       const {outputDir, extractedFilesCount} = await this.extract();
 
       if (this.options.outputEntry && !this.options.quiet) {
-        console.log(`Done extracting ${extractedFilesCount} files to "${outputDir}".`);
+        console.info(`Done extracting ${extractedFilesCount} files to "${outputDir}".`);
       }
 
       return this;
-    } else {
-      throw new Error('No or invalid mode in configuration file defined.');
     }
+    throw new Error('No or invalid mode in configuration file defined.');
   }
 
   public save(): Promise<BuildService> {

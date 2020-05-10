@@ -1,6 +1,6 @@
 import * as fs from 'fs-extra';
 import {JSZipCLI} from '../src';
-import {BuildService} from '../src/BuildService';
+import type {BuildService} from '../src/BuildService';
 
 describe('BuildService', () => {
   let jsZipCLI: JSZipCLI;

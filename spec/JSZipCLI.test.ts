@@ -61,7 +61,7 @@ describe('JSZipCLI', () => {
     const jsZipCLI = new JSZipCLI({configFile: configFilePath});
 
     spyOn(jsZipCLI, 'add').and.callThrough();
-    spyOn<any>(jsZipCLI, 'extract').and.returnValue(Promise.resolve({outputFile: '', compressedFilesCount: 1}));
+    spyOn<any>(jsZipCLI, 'extract').and.returnValue(Promise.resolve({compressedFilesCount: 1, outputFile: ''}));
 
     await jsZipCLI.fileMode();
 
