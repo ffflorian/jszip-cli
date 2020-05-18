@@ -41,7 +41,7 @@ export class ExtractService {
 
       const resolvedPath = path.resolve(entry);
       const data = await fs.readFile(resolvedPath);
-      const entries: [string, JSZip.JSZipObject][] = [];
+      const entries: Array<[string, JSZip.JSZipObject]> = [];
 
       await jszip.loadAsync(data, {createFolders: true});
 

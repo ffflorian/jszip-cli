@@ -8,7 +8,7 @@ export interface TerminalOptions {
   /** Force overwriting files and directories when extracting (default: false). */
   force?: boolean;
   /** Ignore entries (e.g. `*.js.map`). */
-  ignoreEntries?: (string | RegExp)[];
+  ignoreEntries?: Array<string | RegExp>;
   /** Set the output directory (default: stdout). */
   outputEntry?: string | null;
   /** Don't log anything excluding errors (default: false). */
