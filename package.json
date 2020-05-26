@@ -37,7 +37,7 @@
     "eslint-plugin-typescript-sort-keys": "0.9.0",
     "husky": "4.2.5",
     "jasmine": "3.5.0",
-    "lint-staged": "10.2.4",
+    "lint-staged": "10.2.6",
     "prettier": "2.0.5",
     "publish-flat": "1.4.0",
     "rimraf": "3.0.2",
