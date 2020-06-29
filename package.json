@@ -41,7 +41,7 @@
     "prettier": "2.0.5",
     "publish-flat": "1.4.0",
     "rimraf": "3.0.2",
-    "semantic-release": "17.1.0",
+    "semantic-release": "17.1.1",
     "true": "0.0.4",
     "ts-node": "8.10.2",
     "typescript": "3.9.5"
