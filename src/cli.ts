@@ -5,6 +5,7 @@ import * as fs from 'fs-extra';
 import * as path from 'path';
 
 import {JSZipCLI} from './JSZipCLI';
+import {OptionValues} from 'commander';
 
 const defaultPackageJsonPath = path.join(__dirname, 'package.json');
 const packageJsonPath = fs.existsSync(defaultPackageJsonPath)
@@ -47,7 +48,7 @@ commander
   .option('-V, --verbose', 'enable verbose logging (default: false)')
   .option('-q, --quiet', "don't log anything excluding errors (default: false)")
   .arguments('[entries...]')
-  .action((entries: string[], {parent}: commander.Command) => {
+  .action((entries: string[], {parent}: OptionValues) => {
     try {
       new JSZipCLI({
         ...(parent.level && {compressionLevel: parent.level}),
@@ -88,7 +89,7 @@ commander
   .option('-V, --verbose', 'enable verbose logging (default: false)')
   .option('-q, --quiet', "don't log anything excluding errors (default: false)")
   .arguments('<archives...>')
-  .action((archives: string[], {parent}: commander.Command) => {
+  .action((archives: string[], {parent}: OptionValues) => {
     try {
       new JSZipCLI({
         ...((parent.config && {configFile: parent.config}) || (parent.noconfig && {configFile: false})),
@@ -116,19 +117,21 @@ commander
 
 commander.parse(process.argv);
 
+const commanderOptions = commander.opts();
+
 if (!commander.args.length) {
-  if (commander.noconfig) {
+  if (commanderOptions.noconfig) {
     commander.outputHelp();
     process.exit(1);
   }
   try {
     new JSZipCLI({
-      configFile: commander.config || true,
-      ...(commander.force && {force: commander.force}),
-      ...(commander.ignore && {ignoreEntries: [commander.ignore]}),
-      ...(commander.output && {outputEntry: commander.output}),
-      ...(commander.quiet && {quiet: commander.quiet}),
-      ...(commander.verbose && {verbose: commander.verbose}),
+      configFile: commanderOptions.config || true,
+      ...(commanderOptions.force && {force: commanderOptions.force}),
+      ...(commanderOptions.ignore && {ignoreEntries: [commanderOptions.ignore]}),
+      ...(commanderOptions.output && {outputEntry: commanderOptions.output}),
+      ...(commanderOptions.quiet && {quiet: commanderOptions.quiet}),
+      ...(commanderOptions.verbose && {verbose: commanderOptions.verbose}),
     })
       .fileMode()
       .catch(error => {
