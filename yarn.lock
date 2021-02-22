@@ -125,10 +125,10 @@
   resolved "https://registry.npmjs.org/@ffflorian/prettier-config/-/prettier-config-0.1.2.tgz#d0a45f0ad666f4f1d741a6b17e1320a0306f4ed9"
   integrity sha512-QphlsqI6Mr+cmn5jaii/68/DuNceQEoZmCcvHTkA130cKWmLhuWZIk8Xj70sT10A3v/WegZ8r7bpkgobDzd44g==
 
-"@ffflorian/semantic-release-config@0.4.0":
-  version "0.4.0"
-  resolved "https://registry.npmjs.org/@ffflorian/semantic-release-config/-/semantic-release-config-0.4.0.tgz#cfe2b96e967867a1162c986a462b4f809f1dca2b"
-  integrity sha512-1DZC1Ix5dF7I/95mMK4lRAi9eCT8hRMZdui2Gglx32Q3m4odjtjQcI2laIkvjGsdYfP2f7WKTW5qzxGVIuWfGg==
+"@ffflorian/semantic-release-config@0.5.0":
+  version "0.5.0"
+  resolved "https://registry.npmjs.org/@ffflorian/semantic-release-config/-/semantic-release-config-0.5.0.tgz#6f5c8ae2709b8da09467403181624326be6ae78a"
+  integrity sha512-MoYEFpFn3sRuZKd6nTG0MC3Ag/7br2fzgFH9DjrkCXJhg6ag52KdWm938iToYYFLFxRsAZU9hQoUXPtw36j31g==
 
 "@iarna/cli@^1.2.0":
   version "1.2.0"
