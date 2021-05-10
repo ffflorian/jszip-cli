@@ -12,9 +12,8 @@ const packageJsonPath = fs.existsSync(defaultPackageJsonPath)
   ? defaultPackageJsonPath
   : path.join(__dirname, '../package.json');
 
-const {description, name, version}: {description: string; name: string; version: string} = fs.readJSONSync(
-  packageJsonPath
-);
+const {description, name, version}: {description: string; name: string; version: string} =
+  fs.readJSONSync(packageJsonPath);
 
 commander
   .name(name.replace(/^@[^/]+\//, ''))
