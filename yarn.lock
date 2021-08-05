@@ -569,10 +569,10 @@
   resolved "https://registry.npmjs.org/@types/parse-json/-/parse-json-4.0.0.tgz#2f8bb441434d163b35fb8ffdccd7138927ffb8c0"
   integrity sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==
 
-"@types/progress@2.0.4":
-  version "2.0.4"
-  resolved "https://registry.npmjs.org/@types/progress/-/progress-2.0.4.tgz#01f8eb06a5f6be396b81d19a20f273cea11ef9b6"
-  integrity sha512-vXGO4Hkk1QeLGRtOD9D8q2K0peciCA46Qo3n/w8joyW5BYx80C2h3b7qk5MkcRnncQRPlFm+KA73BJRfVl+yyw==
+"@types/progress@2.0.5":
+  version "2.0.5"
+  resolved "https://registry.npmjs.org/@types/progress/-/progress-2.0.5.tgz#6e0febf3a82cc0ffdc1cebb4e56d6949fd108775"
+  integrity sha512-ZYYVc/kSMkhH9W/4dNK/sLNra3cnkfT2nJyOAIDY+C2u6w72wa0s1aXAezVtbTsnN8HID1uhXCrLwDE2ZXpplg==
   dependencies:
     "@types/node" "*"
 
