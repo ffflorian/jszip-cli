@@ -1,3 +1,10 @@
+## [3.1.2](https://github.com/ffflorian/jszip-cli/compare/v3.1.1...v3.1.2) (2021-08-11)
+
+
+### Bug Fixes
+
+* Replace all occurences of "*" in ignored entries ([6020351](https://github.com/ffflorian/jszip-cli/commit/6020351e8461c93a448e6a74670c367844e4c235))
+
 ## [3.1.1](https://github.com/ffflorian/jszip-cli/compare/v3.1.0...v3.1.1) (2021-08-11)
 
 
