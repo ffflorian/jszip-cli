@@ -1,3 +1,10 @@
+## [3.1.1](https://github.com/ffflorian/jszip-cli/compare/v3.1.0...v3.1.1) (2021-08-11)
+
+
+### Bug Fixes
+
+* Force release with updated dependencies ([75a3275](https://github.com/ffflorian/jszip-cli/commit/75a3275b666cc0b3bcab2078654a470aed7dd92f))
+
 # [3.1.0](https://github.com/ffflorian/jszip-cli/compare/v3.0.2...v3.1.0) (2020-01-03)
 
 ### Features
