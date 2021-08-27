@@ -121,7 +121,7 @@ export class JSZipCLI {
       try {
         configResult = this.configExplorer.load(this.options.configFile);
       } catch (error) {
-        throw new Error(`Can't read configuration file: ${error.message}`);
+        throw new Error(`Can't read configuration file: ${(error as Error).message}`);
       }
     } else if (this.options.configFile === true) {
       try {
