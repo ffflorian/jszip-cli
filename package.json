@@ -25,6 +25,7 @@
     "@typescript-eslint/eslint-plugin": "4.29.3",
     "@typescript-eslint/parser": "4.29.3",
     "babel-eslint": "10.1.0",
+    "cross-env": "7.0.3",
     "eslint": "7.32.0",
     "eslint-config-prettier": "8.3.0",
     "eslint-plugin-import": "2.24.2",
@@ -94,7 +95,7 @@
     "postversion": "node ../node_modules/publish-flat/cli-copy.js -i package.json -o ../package.json version",
     "prettier": "prettier \"*.{json,md}\"",
     "release": "semantic-release",
-    "start": "ts-node src/cli.ts",
+    "start": "cross-env NODE_DEBUG=\"jszip-cli/*\" ts-node src/cli.ts",
     "test": "ts-node -P tsconfig.jasmine.json node_modules/.bin/jasmine"
   },
   "version": "3.1.2"

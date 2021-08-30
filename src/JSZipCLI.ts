@@ -3,19 +3,9 @@ import type {CosmiconfigResult} from 'cosmiconfig/dist/types';
 import * as logdown from 'logdown';
 
 import {BuildService} from './BuildService';
+import {defaultOptions} from './defaultOptions';
 import {ExtractService} from './ExtractService';
 import type {ConfigFileOptions, TerminalOptions} from './interfaces';
-
-const defaultOptions: Required<TerminalOptions> = {
-  compressionLevel: 5,
-  configFile: true,
-  dereferenceLinks: false,
-  force: false,
-  ignoreEntries: [],
-  outputEntry: null,
-  quiet: false,
-  verbose: false,
-};
 
 export class JSZipCLI {
   private readonly buildService: BuildService;
