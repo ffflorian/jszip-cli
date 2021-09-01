@@ -5,7 +5,6 @@ import * as fs from 'fs-extra';
 import * as path from 'path';
 
 import {JSZipCLI} from './JSZipCLI';
-import {defaultOptions} from './defaultOptions';
 
 const defaultPackageJsonPath = path.join(__dirname, 'package.json');
 const packageJsonPath = fs.existsSync(defaultPackageJsonPath)
@@ -31,7 +30,7 @@ commander
   .name(name.replace(/^@[^/]+\//, ''))
   .description(description)
   .option('--noconfig', "don't look for a configuration file")
-  .option('-c, --config <path>', 'use a configuration file')
+  .option('-c, --config <path>', 'use a configuration file (default: .jsziprc.json)')
   .option('-d, --dereference', 'dereference (follow) links', false)
   .option('-f, --force', 'force overwriting files and directories when extracting', false)
   .option('-i, --ignore <entry>', 'ignore a file or directory')
@@ -59,30 +58,25 @@ commander
   .option('-q, --quiet', "don't log anything excluding errors", false)
   .option('-V, --verbose', 'enable verbose logging', false)
   .arguments('[entries...]')
-  .action((entries: string[]) => {
+  .action(async (entries: string[]) => {
     const options = commander.opts() as CLIOptions;
     try {
-      new JSZipCLI({
-        compressionLevel: Number(options.level) ?? defaultOptions.compressionLevel,
-        configFile: options.config ?? (options.noconfig && false) ?? defaultOptions.configFile,
-        dereferenceLinks: options.dereference ?? defaultOptions.dereferenceLinks,
-        force: options.force ?? defaultOptions.force,
-        ignoreEntries: options.ignore ? [options.ignore] : defaultOptions.ignoreEntries,
-        outputEntry: options.output ?? defaultOptions.outputEntry,
-        quiet: options.quiet ?? defaultOptions.quiet,
-        verbose: options.verbose ?? defaultOptions.verbose,
-      })
-        .add(entries)
-        .save()
-        .then(({outputFile, compressedFilesCount}) => {
-          if (options.output && !options.quiet) {
-            console.info(`Done compressing ${compressedFilesCount} files to "${outputFile}".`);
-          }
-        })
-        .catch(error => {
-          console.error('Error:', (error as Error).message);
-          process.exit(1);
-        });
+      const jszip = new JSZipCLI({
+        ...(options.level && {compressionLevel: Number(options.level)}),
+        ...((options.config && {configFile: options.config}) || (options.noconfig && {configFile: false})),
+        ...(options.dereference && {dereferenceLinks: options.dereference}),
+        ...(options.force && {force: options.force}),
+        ...(options.ignore && {ignoreEntries: [options.ignore]}),
+        ...(options.output && {outputEntry: options.output}),
+        ...(options.quiet && {quiet: options.quiet}),
+        ...(options.verbose && {verbose: options.verbose}),
+      });
+      jszip.add(entries);
+      const {outputFile, compressedFilesCount} = await jszip.save();
+
+      if (options.output && !options.quiet) {
+        console.info(`Done compressing ${compressedFilesCount} files to "${outputFile}".`);
+      }
     } catch (error) {
       console.error('Error:', (error as Error).message);
       process.exit(1);
@@ -94,65 +88,67 @@ commander
   .alias('e')
   .description('extract files and directories from ZIP archive(s)')
   .option('--noconfig', "don't look for a configuration file", false)
-  .option('-c, --config <path>', 'use a configuration file')
+  .option('-c, --config <path>', 'use a configuration file (default: .jsziprc.json)')
   .option('-o, --output <dir>', 'set the output file or directory (default: stdout)')
   .option('-i, --ignore <entry>', 'ignore a file or directory')
   .option('-f, --force', 'force overwriting files and directories', false)
   .option('-V, --verbose', 'enable verbose logging', false)
   .option('-q, --quiet', "don't log anything excluding errors", false)
   .arguments('<archives...>')
-  .action((archives: string[]) => {
+  .action(async (archives: string[]) => {
     const options = commander.opts() as CLIOptions;
     try {
-      new JSZipCLI({
-        configFile: options.config ?? (options.noconfig && false) ?? defaultOptions.configFile,
-        force: options.force ?? defaultOptions.force,
-        ignoreEntries: options.ignore ? [options.ignore] : defaultOptions.ignoreEntries,
-        outputEntry: options.output ?? defaultOptions.outputEntry,
-        quiet: options.quiet ?? defaultOptions.quiet,
-        verbose: options.verbose ?? defaultOptions.verbose,
-      })
-        .extract(archives)
-        .then(({outputDir, extractedFilesCount}) => {
-          if (options.output && !options.quiet) {
-            console.info(`Done extracting ${extractedFilesCount} files to "${outputDir}".`);
-          }
-        })
-        .catch(error => {
-          console.error('Error:', (error as Error).message);
-          process.exit(1);
-        });
+      const {outputDir, extractedFilesCount} = await new JSZipCLI({
+        ...((options.config && {configFile: options.config}) || (options.noconfig && {configFile: false})),
+        ...(options.force && {force: options.force}),
+        ...(options.ignore && {ignoreEntries: [options.ignore]}),
+        ...(options.output && {outputEntry: options.output}),
+        ...(options.quiet && {quiet: options.quiet}),
+        ...(options.verbose && {verbose: options.verbose}),
+      }).extract(archives);
+
+      if (options.output && !options.quiet) {
+        console.info(`Done extracting ${extractedFilesCount} files to "${outputDir}".`);
+      }
     } catch (error) {
       console.error('Error:', (error as Error).message);
       process.exit(1);
     }
   });
 
-commander.parse(process.argv);
+commander
+  .command('fileMode', {hidden: true, isDefault: true})
+  .option('--noconfig', "don't look for a configuration file", false)
+  .option('-c, --config <path>', 'use a configuration file (default: .jsziprc.json)')
+  .option('-o, --output <dir>', 'set the output file or directory (default: stdout)')
+  .option('-i, --ignore <entry>', 'ignore a file or directory')
+  .option('-f, --force', 'force overwriting files and directories', false)
+  .option('-V, --verbose', 'enable verbose logging', false)
+  .option('-q, --quiet', "don't log anything excluding errors", false)
+  .action(async () => {
+    const options = commander.opts() as CLIOptions;
 
-const commanderOptions = commander.opts();
+    try {
+      if (options.noconfig) {
+        commander.outputHelp();
+      }
 
-if (!commander.args.length) {
-  if (commanderOptions.noconfig) {
-    commander.outputHelp();
-    process.exit(1);
-  }
-  try {
-    new JSZipCLI({
-      configFile: commanderOptions.config || true,
-      ...(commanderOptions.force && {force: commanderOptions.force}),
-      ...(commanderOptions.ignore && {ignoreEntries: [commanderOptions.ignore]}),
-      ...(commanderOptions.output && {outputEntry: commanderOptions.output}),
-      ...(commanderOptions.quiet && {quiet: commanderOptions.quiet}),
-      ...(commanderOptions.verbose && {verbose: commanderOptions.verbose}),
-    })
-      .fileMode()
-      .catch(error => {
+      await new JSZipCLI({
+        configFile: options.config,
+        ...(options.force && {force: options.force}),
+        ...(options.ignore && {ignoreEntries: [options.ignore]}),
+        ...(options.output && {outputEntry: options.output}),
+        ...(options.quiet && {quiet: options.quiet}),
+        ...(options.verbose && {verbose: options.verbose}),
+      }).fileMode();
+    } catch (error) {
+      if ((error as Error).message.includes('ENOENT')) {
+        console.error('Error:', `Configuration file "${options.config}" not found and no mode specified.`);
+      } else {
         console.error('Error:', (error as Error).message);
-        process.exit(1);
-      });
-  } catch (error) {
-    console.error('Error:', (error as Error).message);
-    process.exit(1);
-  }
-}
+      }
+      process.exit(1);
+    }
+  });
+
+commander.parse(process.argv);
