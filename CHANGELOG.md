@@ -1,3 +1,10 @@
+## [3.1.4](https://github.com/ffflorian/jszip-cli/compare/v3.1.3...v3.1.4) (2021-09-01)
+
+
+### Bug Fixes
+
+* Use fileMode as default command ([f337729](https://github.com/ffflorian/jszip-cli/commit/f33772984e5af55e5cb49937479b43793f7d9610))
+
 ## [3.1.3](https://github.com/ffflorian/jszip-cli/compare/v3.1.2...v3.1.3) (2021-08-30)
 
 
