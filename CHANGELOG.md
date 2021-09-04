@@ -1,3 +1,10 @@
+## [3.1.5](https://github.com/ffflorian/jszip-cli/compare/v3.1.4...v3.1.5) (2021-09-04)
+
+
+### Bug Fixes
+
+* Set file mode config only if it exists ([774df9d](https://github.com/ffflorian/jszip-cli/commit/774df9d0908751c00a90b38e8612daea5a44e5f5))
+
 ## [3.1.4](https://github.com/ffflorian/jszip-cli/compare/v3.1.3...v3.1.4) (2021-09-01)
 
 
