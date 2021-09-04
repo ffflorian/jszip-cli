@@ -134,7 +134,7 @@ commander
       }
 
       await new JSZipCLI({
-        configFile: options.config,
+        ...(options.config && {configFile: options.config}),
         ...(options.force && {force: options.force}),
         ...(options.ignore && {ignoreEntries: [options.ignore]}),
         ...(options.output && {outputEntry: options.output}),

@@ -36,6 +36,7 @@ export class JSZipCLI {
 
     this.options = {...defaultOptions, ...this.terminalOptions};
     this.logger.state.isEnabled = this.options.verbose;
+    this.logger.info('Merged options', this.options);
 
     this.checkConfigFile();
 
