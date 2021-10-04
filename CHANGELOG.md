@@ -1,3 +1,10 @@
+## [3.1.6](https://github.com/ffflorian/jszip-cli/compare/v3.1.5...v3.1.6) (2021-10-04)
+
+
+### Bug Fixes
+
+* Don't use String.replaceAll() ([9b3018e](https://github.com/ffflorian/jszip-cli/commit/9b3018e1ce33f75711df36a08795f1455e55816a))
+
 ## [3.1.5](https://github.com/ffflorian/jszip-cli/compare/v3.1.4...v3.1.5) (2021-09-04)
 
 
