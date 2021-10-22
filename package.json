@@ -45,7 +45,7 @@
     "rimraf": "3.0.2",
     "semantic-release": "18.0.0",
     "true": "0.0.4",
-    "ts-node": "10.3.0",
+    "ts-node": "10.3.1",
     "typescript": "4.4.4"
   },
   "engines": {
