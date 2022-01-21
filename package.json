@@ -46,7 +46,7 @@
     "semantic-release": "19.0.2",
     "true": "0.0.4",
     "ts-node": "10.4.0",
-    "typescript": "4.5.4"
+    "typescript": "4.5.5"
   },
   "engines": {
     "node": ">= 10.9"
