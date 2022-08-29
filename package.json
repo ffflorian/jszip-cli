@@ -19,7 +19,7 @@
     "@semantic-release/changelog": "6.0.1",
     "@semantic-release/git": "10.0.1",
     "@types/fs-extra": "9.0.13",
-    "@types/jasmine": "4.0.3",
+    "@types/jasmine": "4.3.0",
     "@types/node": "~16",
     "@types/progress": "2.0.5",
     "@typescript-eslint/eslint-plugin": "4.33.0",
