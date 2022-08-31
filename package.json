@@ -81,7 +81,7 @@
     "lint:ts": "eslint --ignore-path .gitignore --ext .ts src/",
     "lint:ts:spec": "eslint --ignore-path .gitignore --ext .ts --config .eslintrc.spec.json spec/",
     "postversion": "node ../node_modules/publish-flat/cli-copy.js -i package.json -o ../package.json version",
-    "prettier": "prettier \"*.{json,md}\"",
+    "prettier": "prettier \"*.{json,md,yml}\"",
     "release": "semantic-release",
     "start": "cross-env NODE_DEBUG=\"jszip-cli/*\" ts-node src/cli.ts",
     "test": "ts-node -P tsconfig.jasmine.json node_modules/.bin/jasmine"
