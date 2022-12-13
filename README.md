@@ -6,6 +6,8 @@ A zip CLI based on [jszip](https://www.npmjs.com/package/jszip).
 
 Run `yarn global add @ffflorian/jszip-cli` or `npm i -g @ffflorian/jszip-cli`.
 
+Or simply run `npx @ffflorian/jszip-cli`.
+
 ## Usage
 
 ### CLI
