@@ -9,7 +9,7 @@ describe('BuildService', () => {
     spyOn<any>(buildService, 'checkOutput').and.returnValue(Promise.resolve());
     spyOn<any>(buildService, 'addFile').and.callThrough();
     spyOn<any>(fs, 'lstat').and.returnValue(Promise.resolve({isDirectory: () => false, isFile: () => true}));
-    spyOn(fs, 'readFile').and.returnValue(Promise.resolve(Buffer.from([])));
+    spyOn(fs, 'readFile').and.returnValue();
     spyOn<any>(buildService['fileService'], 'writeFile').and.returnValue(Promise.resolve());
   };
 
