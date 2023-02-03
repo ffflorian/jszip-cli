@@ -1,3 +1,10 @@
+## [3.1.7](https://github.com/ffflorian/jszip-cli/compare/v3.1.6...v3.1.7) (2023-02-03)
+
+
+### Bug Fixes
+
+* Ignore bad paths when extracting potentially malicious zip files ([c424f0f](https://github.com/ffflorian/jszip-cli/commit/c424f0f111178993490192a450fba33b60cc1c44))
+
 ## [3.1.6](https://github.com/ffflorian/jszip-cli/compare/v3.1.5...v3.1.6) (2021-10-04)
 
 
